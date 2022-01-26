@@ -15,8 +15,12 @@ import QuestionListItem from "./QuestionListItem"
 const sqlClient = "Quiz/QuestionList"
 const { URL_QUESTIONS } = require("./constants.js")
 const pageRows = 8
-let g_moreData = true
-
+const log = false
+const staleTime = 300000
+//
+// Global Variables
+//
+let g_lastPage = 999
 //...................................................................................
 //.  Get Database rows
 //...................................................................................
@@ -25,14 +29,20 @@ const fetchData = pageNumber => {
   //  SQL database
   //
   let Offset = (pageNumber - 1) * pageRows
+  const method = "post"
   const sqlString = `* from questions order by qid OFFSET ${Offset} ROWS FETCH NEXT ${pageRows} ROWS ONLY`
-  //
-  //  Return promise
-  //
-  const datafetched = axios.post(URL_QUESTIONS, {
+  const data = {
     sqlClient: sqlClient,
     sqlAction: "SELECTSQL",
     sqlString: sqlString,
+  }
+  //
+  //  Return promise
+  //
+  const datafetched = axios({
+    method: method,
+    url: URL_QUESTIONS,
+    data: data,
   })
 
   return datafetched
@@ -41,7 +51,6 @@ const fetchData = pageNumber => {
 //.  Get Next 1 row
 //...................................................................................
 const fetchData1more = async pageNumber => {
-  let moredata
   try {
     //
     //  Setup actions
@@ -49,7 +58,7 @@ const fetchData1more = async pageNumber => {
     let Offset = pageNumber * pageRows
     const method = "post"
     const sqlString = `* from questions order by qid OFFSET ${Offset} ROWS FETCH NEXT 1 ROWS ONLY`
-    const body = {
+    const data = {
       sqlClient: sqlClient,
       sqlAction: "SELECTSQL",
       sqlString: sqlString,
@@ -57,19 +66,25 @@ const fetchData1more = async pageNumber => {
     //
     //  SQL database
     //
-    const datafetched = await apiRequest(method, URL_QUESTIONS, body)
+    const datafetched = await apiRequest(method, URL_QUESTIONS, data)
     //
     //  More data ?
     //
-    moredata = datafetched ? true : false
+    const l_moredata = datafetched[0] ? true : false
+    if (!l_moredata) {
+      g_lastPage = pageNumber
+    }
+    if (log) {
+      console.log(`Current Page ${pageNumber} last Page ${g_lastPage}`)
+    }
+    return
     //
-    //  More data - FALSE
+    //  Errors
     //
   } catch (err) {
-    moredata = false
-  } finally {
-    g_moreData = moredata
-    return moredata
+    if (log) {
+      console.log(err.message)
+    }
   }
 }
 
@@ -81,7 +96,6 @@ function QuestionList() {
   // State
   //
   const [pageNumber, setPageNumber] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
   //
   //  Get the data
   //
@@ -90,13 +104,24 @@ function QuestionList() {
     () => fetchData(pageNumber),
     {
       keepPreviousData: true,
+      staleTime: staleTime,
     }
   )
   //
-  //  Get 1 more
+  //  Data returned not a full page, it is the last page
+  //
+  if (data) {
+    if (data.data.length < pageRows) {
+      g_lastPage = pageNumber
+    }
+  }
+  //
+  //  Get 1 more (if not last page)
   //
   useEffect(() => {
-    fetchData1more(pageNumber)
+    if (g_lastPage === 999) {
+      fetchData1more(pageNumber)
+    }
   }, [pageNumber])
 
   //...................................................................................
@@ -112,6 +137,13 @@ function QuestionList() {
     return <h2>{error.message}</h2>
   }
   //
+  //  Page message
+  //
+  let message
+  g_lastPage === 999
+    ? (message = `Page ${pageNumber}`)
+    : (message = `Page ${pageNumber}/${g_lastPage}`)
+  //
   //  Form to be rendered
   //
   return (
@@ -119,6 +151,7 @@ function QuestionList() {
       <h2>Question List</h2>
       {isFetching && "Loading"}
       <>
+        {/*--------------------------------------------------------------*/}
         <table className='table-fixed content-table'>
           <thead className='table-header-group'>
             <tr className='table-row'>
@@ -146,11 +179,12 @@ function QuestionList() {
         </table>
         <div>
           {/*--------------------------------------------------------------*/}
+          {<p>{message}</p>}
+
+          {/*-------------------------------------------------------------*/}
           <button
             onClick={() => {
               setPageNumber(page => page - 1)
-              setHasMore(true)
-              g_moreData = true
             }}
             disabled={pageNumber === 1}
           >
@@ -159,11 +193,11 @@ function QuestionList() {
           {/*--------------------------------------------------------------*/}
           <button
             onClick={() => {
-              if (g_moreData && hasMore) {
+              if (pageNumber < g_lastPage) {
                 setPageNumber(page => page + 1)
               }
             }}
-            disabled={!g_moreData || !hasMore}
+            disabled={pageNumber === g_lastPage}
           >
             Next Page
           </button>
