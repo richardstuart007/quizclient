@@ -20,7 +20,7 @@ export default function TestRoute2() {
 //...................................................................................
 //.  Get Database rows
 //...................................................................................
-async function fetchList(page = 1) {
+async function fetchList(page) {
   //
   //  SQL database
   //

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useQuery } from "react-query"
+import apiRequest from "./apiRequest"
 import axios from "axios"
 //
 // Components
@@ -14,7 +15,7 @@ import QuestionListItem from "./QuestionListItem"
 const sqlClient = "Quiz/QuestionList"
 const { URL_QUESTIONS } = require("./constants.js")
 const pageRows = 8
-const log = true
+const log = false
 const staleTime = 300000
 //
 // Global Variables
@@ -29,10 +30,8 @@ const fetchData = pageNumber => {
   //
   let Offset = (pageNumber - 1) * pageRows
   const method = "post"
-  const sqlString = `* from questions order by qid OFFSET ${Offset} ROWS FETCH NEXT ${
-    pageRows + 1
-  } ROWS ONLY`
-  const body = {
+  const sqlString = `* from questions order by qid OFFSET ${Offset} ROWS FETCH NEXT ${pageRows} ROWS ONLY`
+  const data = {
     sqlClient: sqlClient,
     sqlAction: "SELECTSQL",
     sqlString: sqlString,
@@ -40,11 +39,53 @@ const fetchData = pageNumber => {
   //
   //  Return promise
   //
-  return axios({
+  const datafetched = axios({
     method: method,
     url: URL_QUESTIONS,
-    data: body,
+    data: data,
   })
+
+  return datafetched
+}
+//...................................................................................
+//.  Get Next 1 row
+//...................................................................................
+const fetchData1more = async pageNumber => {
+  try {
+    //
+    //  Setup actions
+    //
+    let Offset = pageNumber * pageRows
+    const method = "post"
+    const sqlString = `* from questions order by qid OFFSET ${Offset} ROWS FETCH NEXT 1 ROWS ONLY`
+    const data = {
+      sqlClient: sqlClient,
+      sqlAction: "SELECTSQL",
+      sqlString: sqlString,
+    }
+    //
+    //  SQL database
+    //
+    const datafetched = await apiRequest(method, URL_QUESTIONS, data)
+    //
+    //  More data ?
+    //
+    const l_moredata = datafetched[0] ? true : false
+    if (!l_moredata) {
+      g_lastPage = pageNumber
+    }
+    if (log) {
+      console.log(`Current Page ${pageNumber} last Page ${g_lastPage}`)
+    }
+    return
+    //
+    //  Errors
+    //
+  } catch (err) {
+    if (log) {
+      console.log(err.message)
+    }
+  }
 }
 
 //...................................................................................
@@ -55,7 +96,6 @@ function QuestionList() {
   // State
   //
   const [pageNumber, setPageNumber] = useState(1)
-  const [dataRows, setDataRows] = useState([])
   //
   //  Get the data
   //
@@ -68,32 +108,21 @@ function QuestionList() {
     }
   )
   //
-  //  Data returned
+  //  Data returned not a full page, it is the last page
+  //
+  if (data) {
+    if (data.data.length < pageRows) {
+      g_lastPage = pageNumber
+    }
+  }
+  //
+  //  Get 1 more (if not last page)
   //
   useEffect(() => {
-    if (data) {
-      //
-      //  Calculate data to display
-      //
-      let datalength
-      data.data.length > pageRows
-        ? (datalength = pageRows)
-        : (datalength = data.data.length)
-      const displayData = data.data.slice(0, datalength)
-      setDataRows(displayData)
-      //
-      //  Data returned not a pageRows + 1, it is the last page
-      //
-      if (g_lastPage === 999) {
-        if (data.data.length <= pageRows) {
-          g_lastPage = pageNumber
-          if (log) {
-            console.log(`g_lastPage(${g_lastPage})`)
-          }
-        }
-      }
+    if (g_lastPage === 999) {
+      fetchData1more(pageNumber)
     }
-  }, [data])
+  }, [pageNumber])
 
   //...................................................................................
   //.  Render the form
@@ -143,7 +172,7 @@ function QuestionList() {
           </thead>
 
           <tbody className='table-row-group'>
-            {dataRows.map(row => (
+            {data?.data.map(row => (
               <QuestionListItem key={row.qid} question={row} />
             ))}
           </tbody>

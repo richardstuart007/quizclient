@@ -12,6 +12,7 @@ import apiRequest from "./apiRequest"
 //
 const sqlClient = "Quiz/MaterialUI"
 const { URL_QUESTIONS } = require("./constants.js")
+const maxRows = 200
 
 function MaterialUI() {
   //...................................................................................
@@ -34,7 +35,7 @@ function MaterialUI() {
         const body = {
           sqlClient: sqlClient,
           sqlAction: "SELECTSQL",
-          sqlString: `* from questions order by qid`,
+          sqlString: `* from questions order by qid OFFSET 0 ROWS FETCH NEXT ${maxRows} ROWS ONLY`,
         }
         //
         //  SQL database
