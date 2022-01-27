@@ -21,13 +21,6 @@ const Navbar = ({ form, setForm }) => {
         />
         <NavbarLink
           form={form}
-          link_to='/MaterialUI'
-          link_name='MaterialUI'
-          link_form='MaterialUI'
-          setForm={setForm}
-        />
-        <NavbarLink
-          form={form}
           link_to='/TestRoute1'
           link_name='TestRoute1'
           link_form='TestRoute1'
@@ -45,6 +38,13 @@ const Navbar = ({ form, setForm }) => {
           link_to='/Register'
           link_name='Register'
           link_form='Register'
+          setForm={setForm}
+        />
+        <NavbarLink
+          form={form}
+          link_to='/Mtable'
+          link_name='Mtable'
+          link_form='Mtable'
           setForm={setForm}
         />
       </div>

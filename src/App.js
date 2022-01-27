@@ -8,7 +8,7 @@ import { ReactQueryDevtools } from "react-query/devtools"
 import Header from "./components/Header"
 import Navbar from "./components/Navbar"
 import QuestionList from "./components/QuestionList"
-import MaterialUI from "./components/MaterialUI"
+import Mtable from "./components/Mtable"
 import TestRoute1 from "./components/TestRoute1"
 import TestRoute2 from "./components/TestRoute2"
 import Register from "./components/Register"
@@ -40,9 +40,10 @@ function App() {
                 <Route path='/TestRoute1' element={<TestRoute1 />} />
                 <Route path='/TestRoute2' element={<TestRoute2 />} />
                 <Route path='/QuestionList' element={<QuestionList />} />
-                <Route path='/MaterialUI' element={<MaterialUI />} />
+                <Route path='/Mtable' element={<Mtable />} />
                 <Route path='/Register' element={<Register />} />
                 <Route path='/DataEntry' element={<DataEntry />} />
+                <Route path='/' element={<QuestionList />} />
               </Routes>
             </div>
           </div>

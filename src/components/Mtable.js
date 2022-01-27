@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import MaterialTable from "material-table"
 import { Checkbox } from "@material-ui/core"
-import { Qcolumns } from "./Qcolumns"
+import { MtableCols } from "./MtableCols"
 import apiRequest from "./apiRequest"
 
 //..............................................................................
@@ -80,7 +80,7 @@ function MaterialUI() {
         <MaterialTable
           title='Quiz Data'
           data={filteredData}
-          columns={Qcolumns}
+          columns={MtableCols}
           editable={{
             onRowAdd: newRow =>
               new Promise((resolve, reject) => {

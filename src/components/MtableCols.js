@@ -1,4 +1,4 @@
-export const Qcolumns = [
+export const MtableCols = [
   {
     title: "Id",
     field: "qid",
