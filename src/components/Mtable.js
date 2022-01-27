@@ -14,7 +14,7 @@ const sqlClient = "Quiz/MaterialUI"
 const { URL_QUESTIONS } = require("./constants.js")
 const maxRows = 200
 
-function MaterialUI() {
+function Mtable() {
   //...................................................................................
   //.  Define the State variables
   //...................................................................................
@@ -23,7 +23,7 @@ function MaterialUI() {
   const [fetchError, setFetchError] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   //--------------------------------------------------------------------
-  //.  Change of DOM retrieve data
+  //.  Initial load of data
   //--------------------------------------------------------------------
   useEffect(() => {
     const fetchItems = async () => {
@@ -56,9 +56,11 @@ function MaterialUI() {
     //
     //  Initial fetch of data
     //
-    setTimeout(() => fetchItems(), 1000)
+    fetchItems()
   }, [])
-
+  //...................................................................................
+  //.  Filter flag
+  //...................................................................................
   const handleChange = () => {
     setFilter(!filter)
   }
@@ -153,4 +155,4 @@ function MaterialUI() {
   )
 }
 
-export default MaterialUI
+export default Mtable
