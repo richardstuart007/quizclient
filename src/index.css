@@ -468,10 +468,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-backdrop-sepia:  ;
 }
 
-.visible{
-  visibility: visible;
-}
-
 .table{
   display: table;
 }
@@ -558,24 +554,27 @@ Ensure the default browser behavior of the `hidden` attribute.
 body {
   margin: 0;
   font-family: sans-serif;
-  background: rgb(243, 217, 207);
+  background: rgba(227, 241, 192, 0.967);
   text-align: center;
 }
 
+.MainPanel {
+  background-color: rgb(225, 249, 250);
+  border-radius: 5px;
+}
+
 .App {
-  /* width: 1600px; */
   margin: 10px;
 }
 
 button {
   margin-right: 10px;
   margin-top: 10px;
-  background: transparent;
-  border: 3px solid rgb(22, 129, 58);
+  background-color: pink;
+  border: 1px solid rgb(22, 129, 58);
   border-radius: 20px;
-  padding: 10px;
+  padding: 4px;
   color: rgb(22, 129, 58);
-  font-size: 1.2em;
   cursor: pointer;
 }
 
@@ -583,14 +582,20 @@ button:disabled,
 button[disabled] {
   margin-right: 10px;
   margin-top: 10px;
-  background: transparent;
-  border: 3px solid rgb(22, 129, 58);
+  background-color: pink;
+  border: 1px solid rgb(22, 129, 58);
   border-radius: 20px;
-  padding: 10px;
-  font-size: 1.2em;
+  padding: 4px;
   color: rgb(157, 160, 158);
   opacity: 0.2;
   cursor: not-allowed;
+}
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  background-color: pink;
 }
 
 .content {
@@ -627,23 +632,21 @@ button[disabled] {
 
 .navbar .link {
   margin-right: 10px;
-  background: transparent;
-  border: 3px solid rgb(22, 129, 58);
+  background: pink;
+  border: 1px solid rgb(22, 129, 58);
   border-radius: 20px;
-  padding: 10px;
+  padding: 4px;
   color: rgb(22, 129, 58);
-  font-size: 1.2em;
   cursor: pointer;
 }
 
 .navbar .disabled {
   margin-right: 10px;
-  background: transparent;
-  border: 3px solid rgb(22, 129, 58);
+  background: pink;
+  border: 1px solid rgb(22, 129, 58);
   border-radius: 20px;
-  padding: 10px;
+  padding: 4px;
   color: rgb(157, 160, 158);
-  font-size: 1.2em;
   opacity: 0.2;
   cursor: not-allowed;
 }
@@ -679,7 +682,7 @@ textarea {
 }
 
 input[type="submit"] {
-  background-color: #4caf50;
+  background-color: pink;
   color: white;
   padding: 12px 20px;
   border: none;
@@ -690,13 +693,6 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
   background-color: #45a049;
-}
-
-.dataentry {
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
-  width: 100%;
 }
 
 .col-25 {
@@ -767,4 +763,33 @@ input[type="submit"]:hover {
 .content-table tbody td.active_row {
   font-weight: bold;
   color: #45a049;
+}
+
+label {
+  font-weight: bold;
+  display: flex;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  display: block;
+  width: 400px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-control {
+  margin-bottom: 20px;
+}
+
+.error {
+  color: red;
 }

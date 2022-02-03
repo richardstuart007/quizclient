@@ -149,13 +149,12 @@ function Mtable() {
   //.  Render the form
   //...................................................................................
   return (
-    <div className='App'>
+    <div className='App MainPanel'>
       {/* //                                                                              */}
       {/* //  Loading or Fetching error                                                   */}
       {/* //                                                                              */}
       {isLoading && <p>Loading ...</p>}
       {fetchError && <p style={{ color: "red" }}>{`Error: ${fetchError}`}</p>}
-
       {/* //                                                                              */}
       {/* //  Data Received                                                   */}
       {/* //                                                                              */}

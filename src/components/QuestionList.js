@@ -123,7 +123,7 @@ function QuestionList() {
       {isFetching && "Loading"}
       <>
         {/*--------------------------------------------------------------*/}
-        <table className='table-fixed content-table'>
+        <table className='table-fixed content-table MainPanel'>
           <thead className='table-header-group'>
             <tr className='table-row'>
               <th className='table-cell'>ID</th>
