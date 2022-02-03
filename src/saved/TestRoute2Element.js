@@ -2,7 +2,7 @@ import React from "react"
 import { Field, ErrorMessage } from "formik"
 import TextError from "./TextError"
 
-const DataEntryElement = ({ entry_type, entry_label, entry_name }) => {
+const TestRoute2Element = ({ entry_type, entry_label, entry_name }) => {
   return (
     <div className='form-control row'>
       <label className='col-10 inputlabel' htmlFor={entry_name}>
@@ -21,4 +21,4 @@ const DataEntryElement = ({ entry_type, entry_label, entry_name }) => {
   )
 }
 
-export default DataEntryElement
+export default TestRoute2Element

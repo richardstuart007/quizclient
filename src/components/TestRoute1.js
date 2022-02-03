@@ -1,12 +1,7 @@
 import React from "react"
-import YoutubeForm from "./YoutubeForm"
 
 const TestRoute1 = () => {
-  return (
-    <div>
-      <YoutubeForm />
-    </div>
-  )
+  return <div>TestRoute1</div>
 }
 
 export default TestRoute1

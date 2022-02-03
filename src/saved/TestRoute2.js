@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import DataEntryElement from "./DataEntryElement"
+import TestRoute2Element from "./TestRoute2Element"
 import { Formik, Form } from "formik"
 import * as Yup from "yup"
 //..............................................................................
@@ -67,7 +67,7 @@ const validationSchema = Yup.object({
 //...................................................................................
 //.  Define the State variables
 //...................................................................................
-function DataEntry() {
+function TestRoute2() {
   //
   // Row of data
   //
@@ -197,73 +197,73 @@ function DataEntry() {
               {/*.................................................................................................*/}
               <div className='MainPanel'>
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qowner'
                   entry_label='Owner'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qkey'
                   entry_label='Key'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qtitle'
                   entry_label='Title'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qdetail'
                   entry_label='Detail'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qhyperlink1'
                   entry_label='Hyperlink 1'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qhyperlink2'
                   entry_label='Hyperlink 2'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qanswer_correct'
                   entry_label='Correct Answer'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qanswer_bad1'
                   entry_label='Bad Answer 1'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qanswer_bad2'
                   entry_label='Bad Answer 2'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qanswer_bad3'
                   entry_label='Bad Answer 3'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qgroup1'
                   entry_label='Group 1'
                 />
                 {/*.................................................................................................*/}
-                <DataEntryElement
+                <TestRoute2Element
                   entry_type='text'
                   entry_name='qgroup2'
                   entry_label='Group 2'
@@ -304,4 +304,4 @@ function DataEntry() {
   )
 }
 
-export default DataEntry
+export default TestRoute2
