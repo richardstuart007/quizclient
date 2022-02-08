@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { DataEntryFields } from "./DataEntryFields"
 import DataEntryPanel from "./DataEntryPanel"
+import DataEntryElement from "./DataEntryElement"
 import { Formik, Form } from "formik"
 import * as Yup from "yup"
 //..............................................................................
@@ -11,9 +12,11 @@ import * as Yup from "yup"
 //
 const { URL_QUESTIONS } = require("./constants.js")
 const sqlClient = "Quiz/DataEntry"
-const sqlTable = "questions"
+const log = false
 const log2 = false
 
+const EntryFields = Object.entries(DataEntryFields)
+console.log(EntryFields)
 //.............................................................................
 //.  Data Input Fields
 //.............................................................................
@@ -32,7 +35,7 @@ const initialValues = {
   qanswer_bad2: "",
   qanswer_bad3: "",
   qgroup1: "",
-  qgroup2: ""
+  qgroup2: "",
 }
 //
 //  Saved Values on Submit
@@ -49,24 +52,8 @@ const savedValues = {
   qanswer_bad2: "",
   qanswer_bad3: "",
   qgroup1: "",
-  qgroup2: ""
+  qgroup2: "",
 }
-//
-// Current Key values
-//
-let c_qid = 0
-let c_qowner = ""
-let c_qkey = ""
-//
-// Previous Key values
-//
-let p_qid = 0
-let p_qowner = ""
-let p_qkey = ""
-//
-//  Database return ID
-//
-let rtn_qid = 0
 //.............................................................................
 //.  Input field validation
 //.............................................................................
@@ -80,7 +67,7 @@ const validationSchema = Yup.object({
   qanswer_bad2: Yup.string().required("Required"),
   qanswer_bad3: Yup.string().required("Required"),
   qgroup1: Yup.string().required("Required"),
-  qgroup2: Yup.string().required("Required")
+  qgroup2: Yup.string().required("Required"),
 })
 //...................................................................................
 //.  Define the State variables
@@ -90,11 +77,12 @@ function DataEntry() {
   // Row of data
   //
   const [qid, setQid] = useState(0)
+
   const [formValues, setFormValues] = useState(initialValues)
   //
   // Form Message
   //
-  const [form_message, setForm_message] = useState("")
+  const [form_message, setForm_message] = useState("Enter Data")
   //...................................................................................
   //.  Form Submit
   //...................................................................................
@@ -102,6 +90,9 @@ function DataEntry() {
     //
     //  Save data
     //
+    if (log) {
+      console.log("Form data", values)
+    }
     savedValues.qowner = values.qowner
     savedValues.qkey = values.qkey
     savedValues.qtitle = values.qtitle
@@ -114,125 +105,67 @@ function DataEntry() {
     savedValues.qanswer_bad3 = values.qanswer_bad3
     savedValues.qgroup1 = values.qgroup1
     savedValues.qgroup2 = values.qgroup2
-    //
-    //  Current Key values
-    //
-    c_qid = qid
-    c_qowner = savedValues.qowner
-    c_qkey = savedValues.qkey
+    if (log) {
+      console.log("Saved data", savedValues)
+    }
     //
     //  Update database
     //
     databaseUpdate()
     //
-    //  Update Key values
-    //
-    if (rtn_qid > 0) {
-      setQid(rtn_qid)
-      c_qid = rtn_qid
-      p_qid = rtn_qid
-      p_qowner = savedValues.qowner
-      p_qkey = savedValues.qkey
-    }
-    //
     //  Reset form
     //
     submitProps.setSubmitting(false)
     submitProps.resetForm()
-    setFormValues(initialValues)
   }
   //...................................................................................
   //.  Add to the database
   //...................................................................................
   const databaseUpdate = () => {
     //
-    //  slqAction: UPDATE/UPSERT
+    //  Current ID
     //
-    let sqlAction
-    c_qid === p_qid && c_qowner === p_qowner && c_qkey === p_qkey
-      ? (sqlAction = "UPDATE")
-      : (sqlAction = "UPSERT")
+    const qid_current = qid
     //
-    //  UPDATE
+    //  Create SQL string
     //
-    let bodySql
-    if (sqlAction === "UPDATE") {
-      const sqlWhere = `qid = ${p_qid}`
-      bodySql = JSON.stringify({
-        sqlClient: sqlClient,
-        sqlAction: sqlAction,
-        sqlTable: sqlTable,
-        sqlWhere: sqlWhere,
-        sqlRow: savedValues
-      })
-    }
-    //
-    //  UPSERT
-    //
-    else {
-      bodySql = JSON.stringify({
-        sqlClient: sqlClient,
-        sqlAction: sqlAction,
-        sqlTable: sqlTable,
-        sqlKeyName: ["qowner", "qkey"],
-        sqlRow: savedValues
-      })
-    }
+    const bodySql = JSON.stringify({
+      sqlClient: sqlClient,
+      sqlAction: "UPSERT",
+      sqlTable: "questions",
+      sqlKeyName: ["qowner", "qkey"],
+      sqlRow: savedValues,
+    })
     //
     //  Update database
     //
+    if (log) {
+      console.log(bodySql)
+    }
     fetch(URL_QUESTIONS, {
       method: "put",
       headers: { "Content-Type": "application/json" },
-      body: bodySql
+      body: bodySql,
     })
       .then(response => response.json())
       .then(responseJson => {
-        //
-        //  No data returned - error object instead
-        //
-        if (!responseJson[0]) {
-          const { returnCatchFunction, returnMessage } = responseJson
-          const message = `Error(${returnMessage}) function(${returnCatchFunction})`
-          console.log("return data", responseJson)
-          setForm_message(message)
-          throw message
-        }
-        //
-        //  Data returned
-        //
         const returnObj = responseJson[0]
-        //
-        //  ID returned from DB update
-        //
-        rtn_qid = 0
-        if (returnObj) {
-          rtn_qid = returnObj.qid
+        if (log) {
+          console.log(returnObj)
         }
         //
         //  Message
         //
+        const { qid } = returnObj
+        setQid(qid)
         let formMessageUpdate
         formMessageUpdate = !returnObj
           ? "Row NOT added to database"
           : (formMessageUpdate =
-              rtn_qid === p_qid
-                ? `Row (${rtn_qid}) UPDATED in Database`
-                : (formMessageUpdate =
-                    rtn_qid < p_qid
-                      ? `Row (${rtn_qid}) UPSERTED in Database`
-                      : `Row (${rtn_qid}) ADDED to Database`))
+              qid === qid_current
+                ? `Row UPDATED in Database`
+                : `Row ADDED to Database`)
         setForm_message(formMessageUpdate)
-        //
-        //  Update Key values
-        //
-        if (rtn_qid > 0) {
-          setQid(rtn_qid)
-          c_qid = rtn_qid
-          p_qid = rtn_qid
-          p_qowner = savedValues.qowner
-          p_qkey = savedValues.qkey
-        }
       })
       .catch(err => {
         setForm_message(err.message)
@@ -250,8 +183,9 @@ function DataEntry() {
       enableReinitialize
     >
       {formik => {
-        if (log2) console.log("Formik props", formik)
-        if (log2) console.log(`Formik is valid ${formik.isValid}`)
+        if (log2) {
+          console.log("Formik props", formik)
+        }
         return (
           <Form>
             <main className=''>
@@ -266,7 +200,83 @@ function DataEntry() {
               </legend>
 
               {/*.................................................................................................*/}
-              <DataEntryPanel EntryFields={DataEntryFields} />
+              <div className='MainPanel'>
+                <DataEntryPanel EntryFields={EntryFields} />
+                {/*.................................................................................................*/}
+                {/* <DataEntryElement
+                  entry_type='text'
+                  entry_name='qowner'
+                  entry_label='Owner'
+                /> */}
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qkey'
+                  entry_label='Key'
+                />
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qtitle'
+                  entry_label='Title'
+                />
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qdetail'
+                  entry_label='Detail'
+                />
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qhyperlink1'
+                  entry_label='Hyperlink 1'
+                />
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qhyperlink2'
+                  entry_label='Hyperlink 2'
+                />
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qanswer_correct'
+                  entry_label='Correct Answer'
+                />
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qanswer_bad1'
+                  entry_label='Bad Answer 1'
+                />
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qanswer_bad2'
+                  entry_label='Bad Answer 2'
+                />
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qanswer_bad3'
+                  entry_label='Bad Answer 3'
+                />
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qgroup1'
+                  entry_label='Group 1'
+                />
+                {/*.................................................................................................*/}
+                <DataEntryElement
+                  entry_type='text'
+                  entry_name='qgroup2'
+                  entry_label='Group 2'
+                />
+                {/*.................................................................................................*/}
+              </div>
+
               {/*.................................................................................................*/}
               {/*  Message */}
               {/*.................................................................................................*/}
