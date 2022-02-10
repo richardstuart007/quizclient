@@ -7,6 +7,13 @@ const Navbar = ({ form, setForm }) => {
       <div className='links'>
         <NavbarLink
           form={form}
+          link_to='/Quiz'
+          link_name='Quiz'
+          link_form='Quiz'
+          setForm={setForm}
+        />
+        <NavbarLink
+          form={form}
           link_to='/DataEntry'
           link_name='DataEntry'
           link_form='DataEntry'

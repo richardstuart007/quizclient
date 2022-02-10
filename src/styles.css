@@ -237,3 +237,7 @@ textarea {
   padding: 6px 12px;
   color: red;
 }
+
+.block {
+  display: block;
+}

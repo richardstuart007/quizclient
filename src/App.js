@@ -4,8 +4,7 @@ import { QueryClientProvider, QueryClient } from "react-query"
 import { ReactQueryDevtools } from "react-query/devtools"
 //
 //  Components
-//
-import Header from "./components/Header"
+
 import Navbar from "./components/Navbar"
 import QuestionList from "./components/QuestionList"
 import Mtable from "./components/Mtable"
@@ -13,6 +12,7 @@ import TestRoute1 from "./components/TestRoute1"
 import TestRoute2 from "./components/TestRoute2"
 import Register from "./components/Register"
 import DataEntry from "./components/DataEntry"
+import Quiz from "./components/Quiz"
 //
 // new instance of client Query
 //
@@ -33,10 +33,10 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <div className='App'>
-            <Header />
             <Navbar form={form} setForm={setForm} />
             <div className='content'>
               <Routes>
+                <Route path='/Quiz' element={<Quiz />} />
                 <Route path='/TestRoute1' element={<TestRoute1 />} />
                 <Route path='/TestRoute2' element={<TestRoute2 />} />
                 <Route path='/QuestionList' element={<QuestionList />} />

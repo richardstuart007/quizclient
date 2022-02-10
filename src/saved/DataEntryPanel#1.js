@@ -1,5 +1,5 @@
 import React from "react"
-import DataEntryElement from "./DataEntryElement"
+import DataEntryElement from "../components/DataEntryElement"
 
 const DataEntryPanel = EntryFields => {
   //

@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { DataEntryFields } from "./DataEntryFields"
-import DataEntryPanel from "./DataEntryPanel"
+import { DataEntryFields } from "../components/DataEntryFields"
+import DataEntryPanel from "../components/DataEntryPanel"
 import { Formik, Form } from "formik"
 import * as Yup from "yup"
 //..............................................................................
@@ -9,7 +9,7 @@ import * as Yup from "yup"
 //
 // Constants
 //
-const { URL_QUESTIONS } = require("./constants.js")
+const { URL_QUESTIONS } = require("../components/constants.js")
 const sqlClient = "Quiz/DataEntry"
 const sqlTable = "questions"
 const log2 = false

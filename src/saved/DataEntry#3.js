@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { DataEntryFields } from "./DataEntryFields"
-import DataEntryPanel from "./DataEntryPanel"
-import DataEntryElement from "./DataEntryElement"
+import { DataEntryFields } from "../components/DataEntryFields"
+import DataEntryPanel from "../components/DataEntryPanel"
+import DataEntryElement from "../components/DataEntryElement"
 import { Formik, Form } from "formik"
 import * as Yup from "yup"
 //..............................................................................
@@ -10,7 +10,7 @@ import * as Yup from "yup"
 //
 // Constants
 //
-const { URL_QUESTIONS } = require("./constants.js")
+const { URL_QUESTIONS } = require("../components/constants.js")
 const sqlClient = "Quiz/DataEntry"
 const log = false
 const log2 = false
@@ -35,7 +35,7 @@ const initialValues = {
   qanswer_bad2: "",
   qanswer_bad3: "",
   qgroup1: "",
-  qgroup2: "",
+  qgroup2: ""
 }
 //
 //  Saved Values on Submit
@@ -52,7 +52,7 @@ const savedValues = {
   qanswer_bad2: "",
   qanswer_bad3: "",
   qgroup1: "",
-  qgroup2: "",
+  qgroup2: ""
 }
 //.............................................................................
 //.  Input field validation
@@ -67,7 +67,7 @@ const validationSchema = Yup.object({
   qanswer_bad2: Yup.string().required("Required"),
   qanswer_bad3: Yup.string().required("Required"),
   qgroup1: Yup.string().required("Required"),
-  qgroup2: Yup.string().required("Required"),
+  qgroup2: Yup.string().required("Required")
 })
 //...................................................................................
 //.  Define the State variables
@@ -134,7 +134,7 @@ function DataEntry() {
       sqlAction: "UPSERT",
       sqlTable: "questions",
       sqlKeyName: ["qowner", "qkey"],
-      sqlRow: savedValues,
+      sqlRow: savedValues
     })
     //
     //  Update database
@@ -145,7 +145,7 @@ function DataEntry() {
     fetch(URL_QUESTIONS, {
       method: "put",
       headers: { "Content-Type": "application/json" },
-      body: bodySql,
+      body: bodySql
     })
       .then(response => response.json())
       .then(responseJson => {
