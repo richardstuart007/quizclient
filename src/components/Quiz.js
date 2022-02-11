@@ -14,14 +14,13 @@ const { URL_QUESTIONS } = require("./constants.js")
 const sqlClient = "Quiz/Quiz"
 const sqlTable = "questions"
 const maxRows = 200
-const log = true
+const log = false
 //.............................................................................
-//.  Data Input Fields
+//.  Global fields
 //.............................................................................
-//
-//  Row
-//
 let g_row = 0
+let g_quizNum = 0
+let g_firstTime = true
 //...................................................................................
 //.  Define the State variables
 //...................................................................................
@@ -32,63 +31,54 @@ function Quiz() {
   const [fetchError, setFetchError] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [quizData, setQuizData] = useState([])
-  let row
+  const [quizRow, setQuizRow] = useState(null)
+  const [radioOptions, setRadioOptions] = useState([])
   //
   // Form Message
   //
   const [form_message, setForm_message] = useState("")
-
   //--------------------------------------------------------------------
   //.  Formik
   //--------------------------------------------------------------------
-  let radioOptions = []
-
   const initialValues = {
     radioOption: ""
   }
   const validationSchema = Yup.object({
     radioOption: Yup.string().required("Required")
   })
-
   //--------------------------------------------------------------------
   //.  Initial load of data
   //--------------------------------------------------------------------
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        //
-        //  Setup actions
-        //
-        const method = "post"
-        const body = {
-          sqlClient: sqlClient,
-          sqlAction: "SELECTSQL",
-          sqlString: `* from ${sqlTable} order by qid OFFSET 0 ROWS FETCH NEXT ${maxRows} ROWS ONLY`
-        }
-        //
-        //  SQL database
-        //
-        const resultData = await apiRequest(method, URL_QUESTIONS, body)
-        //
-        //  Process results
-        //
-        if (!resultData) {
-          setForm_message("Did not receive expected data")
-          throw Error("Did not receive expected data")
-        }
-        setQuizData(resultData)
-        setFetchError(null)
-      } catch (err) {
-        setFetchError(err.message)
-      } finally {
-        setIsLoading(false)
+  const fetchItems = async () => {
+    try {
+      //
+      //  Setup actions
+      //
+      const method = "post"
+      const body = {
+        sqlClient: sqlClient,
+        sqlAction: "SELECTSQL",
+        sqlString: `* from ${sqlTable} order by qid OFFSET 0 ROWS FETCH NEXT ${maxRows} ROWS ONLY`
       }
+      //
+      //  SQL database
+      //
+      const resultData = await apiRequest(method, URL_QUESTIONS, body)
+      //
+      //  Process results
+      //
+      if (!resultData) {
+        setForm_message("Did not receive expected data")
+        throw Error("Did not receive expected data")
+      }
+      setQuizData(resultData)
+      setFetchError(null)
+    } catch (err) {
+      setFetchError(err.message)
+    } finally {
+      setIsLoading(false)
     }
-    //
-    //  Initial fetch of data
-    //
-    fetchItems()
-  }, [])
+  }
 
   //...................................................................................
   //.  Form Submit
@@ -98,53 +88,93 @@ function Quiz() {
     //  Check form
     //
     console.log("Form data", values)
-    alert("submit data for checking")
     //
     //  Reset form
     //
+    g_row = g_row + 1
+    getRadioButtons()
+  }
+  //...................................................................................
+  //. Data Received
+  //...................................................................................
+  const DataReceived = () => {
+    try {
+      //
+      //  Numer of rows
+      //
+      g_quizNum = quizData.length
+    } catch (err) {
+      setFetchError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
   //...................................................................................
   //. Create the Radio buttons data
   //...................................................................................
-  if (!fetchError && !isLoading) {
-    //
-    //  Deconstruct row
-    //
-    if (log) console.log(quizData[g_row])
-    row = quizData[g_row]
-    if (log) console.log(row)
-    const { qanswer_correct, qanswer_bad1, qanswer_bad2, qanswer_bad3 } = row
-    //
-    //  Row Options array
-    //
-    let rowOptions = []
-    if (qanswer_correct) rowOptions.push(qanswer_correct)
-    if (qanswer_bad1) rowOptions.push(qanswer_bad1)
-    if (qanswer_bad2) rowOptions.push(qanswer_bad2)
-    if (qanswer_bad3) rowOptions.push(qanswer_bad3)
-    if (log) console.log(rowOptions)
-    //
-    //  Radio buttons array/object
-    //
-    radioOptions = []
-    let string = ""
-    let radioOptionsElement = {}
-    rowOptions.forEach((radioText, j) => {
-      if (log) console.log("radioText, index ", radioText, j)
-      string = `{"key":"${radioText}", "value":"${j + 1}"}`
-      if (log) console.log("string ", string)
-      radioOptionsElement = JSON.parse(string)
-      if (log) console.log("radioOptionsElement ", radioOptionsElement)
-
-      radioOptions.push(radioOptionsElement)
-      if (log) console.log("radioOptions length", radioOptions.length)
-    })
-    if (log) console.log(radioOptions)
+  const getRadioButtons = () => {
+    try {
+      //
+      //  Deconstruct row
+      //
+      const l_quizRow = quizData[g_row]
+      setQuizRow(l_quizRow)
+      const { qanswer_correct, qanswer_bad1, qanswer_bad2, qanswer_bad3 } =
+        l_quizRow
+      //
+      //  Row Options array
+      //
+      let rowOptions = []
+      if (qanswer_correct) rowOptions.push(qanswer_correct)
+      if (qanswer_bad1) rowOptions.push(qanswer_bad1)
+      if (qanswer_bad2) rowOptions.push(qanswer_bad2)
+      if (qanswer_bad3) rowOptions.push(qanswer_bad3)
+      //
+      //  Radio buttons array/object
+      //
+      let l_radioOptions = []
+      let string = ""
+      let l_radioOptionsElement = {}
+      rowOptions.forEach((radioText, j) => {
+        string = `{"key":"${radioText}", "value":"${j + 1}"}`
+        l_radioOptionsElement = JSON.parse(string)
+        l_radioOptions.push(l_radioOptionsElement)
+      })
+      //
+      //  Create the buttons
+      //
+      setRadioOptions(l_radioOptions)
+    } catch (err) {
+      setFetchError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
+  //...................................................................................
+  //.  Main Line
+  //...................................................................................
+  //
+  //  Initial fetch of data
+  //
+  useEffect(() => {
+    fetchItems()
+  }, [])
+  //
+  //  Get the radio buttons first time
+  //
+  if (log) console.log("fetchError", fetchError)
+  if (log) console.log("isLoading", isLoading)
+  if (!fetchError && !isLoading) {
+    if (g_firstTime) {
+      g_firstTime = false
+      DataReceived()
+      getRadioButtons()
+    }
+  }
+
   //...................................................................................
   //.  Render the form
   //...................................................................................
-
   return (
     <>
       {/* //                                                                              */}
@@ -169,11 +199,11 @@ function Quiz() {
                 {/*  Form Title */}
                 {/*.................................................................................................*/}
                 <legend className='py-2'>
-                  <h1 className='text-3xl '>Quiz</h1>
+                  <h1 className='text-3xl '>Quiz questions {g_quizNum}</h1>
                 </legend>
 
                 {/*.................................................................................................*/}
-                <QuizPanel row={row} />
+                <QuizPanel row={quizRow} />
                 <FormikControl
                   control='radio'
                   label=''
@@ -192,7 +222,7 @@ function Quiz() {
                 {/*  Buttons */}
                 {/*.................................................................................................*/}
                 <button type='submit' value='Submit'>
-                  Submit
+                  Next
                 </button>
               </main>
             </Form>

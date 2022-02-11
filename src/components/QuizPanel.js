@@ -12,9 +12,9 @@ const QuizPanel = ({ row }) => {
   //
   return (
     <div className='MainPanel'>
-      <p>qid {qid} </p>
-      <p>qtitle {qtitle} </p>
-      <p>qdetail {qdetail} </p>
+      <p>{qid} </p>
+      <p>{qtitle} </p>
+      <p>{qdetail} </p>
     </div>
   )
 }
