@@ -1,7 +1,8 @@
-import React from "react"
+import React from 'react'
+import Quiz1 from './Quiz1'
 
 const TestRoute1 = () => {
-  return <div>TestRoute1</div>
+  return <Quiz1 />
 }
 
 export default TestRoute1
