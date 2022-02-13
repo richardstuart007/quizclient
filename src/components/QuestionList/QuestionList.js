@@ -1,18 +1,21 @@
-import { useState, useEffect } from "react"
-import { useQuery } from "react-query"
-import axios from "axios"
 //
-// Components
+//  Libraries
 //
-import QuestionListItem from "./QuestionListItem"
+import { useState, useEffect } from 'react'
+import { useQuery } from 'react-query'
+import axios from 'axios'
+//
+//  Sub Components
+//
+import QuestionListItem from './QuestionListItem'
 //..............................................................................
 //.  Initialisation
 //.............................................................................
 //
 // Constants
 //
-const sqlClient = "Quiz/QuestionList"
-const { URL_QUESTIONS } = require("./constants.js")
+const sqlClient = 'Quiz/QuestionList'
+const { URL_QUESTIONS } = require('../constants.js')
 const pageRows = 8
 const log = true
 const staleTime = 300000
@@ -28,14 +31,14 @@ const fetchData = pageNumber => {
   //  SQL database
   //
   let Offset = (pageNumber - 1) * pageRows
-  const method = "post"
+  const method = 'post'
   const sqlString = `* from questions order by qid OFFSET ${Offset} ROWS FETCH NEXT ${
     pageRows + 1
   } ROWS ONLY`
   const body = {
     sqlClient: sqlClient,
-    sqlAction: "SELECTSQL",
-    sqlString: sqlString,
+    sqlAction: 'SELECTSQL',
+    sqlString: sqlString
   }
   //
   //  Return promise
@@ -43,13 +46,12 @@ const fetchData = pageNumber => {
   return axios({
     method: method,
     url: URL_QUESTIONS,
-    data: body,
+    data: body
   })
 }
-
-//...................................................................................
-//.  Function
-//...................................................................................
+//===================================================================================
+//=  This Component
+//===================================================================================
 function QuestionList() {
   //
   // State
@@ -60,11 +62,11 @@ function QuestionList() {
   //  Get the data
   //
   const { isLoading, isError, error, data, isFetching } = useQuery(
-    ["questions", pageNumber],
+    ['questions', pageNumber],
     () => fetchData(pageNumber),
     {
       keepPreviousData: true,
-      staleTime: staleTime,
+      staleTime: staleTime
     }
   )
   //
@@ -120,7 +122,7 @@ function QuestionList() {
   return (
     <div>
       <h2>Question List</h2>
-      {isFetching && "Loading"}
+      {isFetching && 'Loading'}
       <>
         {/*--------------------------------------------------------------*/}
         <table className='table-fixed content-table MainPanel'>

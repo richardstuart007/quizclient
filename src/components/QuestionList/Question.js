@@ -1,5 +1,10 @@
-import React from "react";
-
+//
+//  Libraries
+//
+import React from 'react'
+//===================================================================================
+//=  This Component
+//===================================================================================
 const Question = ({ question }) => {
   const {
     qid,
@@ -12,8 +17,8 @@ const Question = ({ question }) => {
     qanswer_correct,
     qanswer_bad1,
     qanswer_bad2,
-    qanswer_bad3,
-  } = question;
+    qanswer_bad3
+  } = question
   return (
     <tr className='table-row'>
       <td className='table-cell text-red-500'>{qid}</td>
@@ -28,7 +33,7 @@ const Question = ({ question }) => {
       <td className='table-cell'>{qanswer_bad2}</td>
       <td className='table-cell'>{qanswer_bad3}</td>
     </tr>
-  );
-};
+  )
+}
 
-export default Question;
+export default Question

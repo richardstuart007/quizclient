@@ -1,33 +1,39 @@
+//
+//  Libraries
+//
 import { useState, useEffect } from 'react'
-import QuizPanel from './QuizPanel'
-import apiRequest from './apiRequest'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-import FormikControl from './Formik/FormikControl'
+//
+//  Sub Components
+//
+import QuizPanel from './QuizPanel'
+import apiRequest from '../apiRequest'
+import FormikControl from '../Formik/FormikControl'
 //.............................................................................
 //.  Initialisation
 //.............................................................................
 //
 // Constants
 //
-const { URL_QUESTIONS } = require('./constants.js')
+const { URL_QUESTIONS } = require('../constants.js')
 const sqlClient = 'Quiz/Quiz'
 const sqlTable = 'questions'
 const maxRows = 200
-const log = false
-//.............................................................................
-//.  Global fields
-//.............................................................................
+const log = true
+//
+//  Global fields
+//
 let g_row = 0
 let g_quizNum = 0
 let g_firstTime = true
-//...................................................................................
-//.  Define the State variables
-//...................................................................................
-function Quiz1() {
-  //...................................................................................
-  //.  Define the State variables
-  //...................................................................................
+//===================================================================================
+//=  This Component
+//===================================================================================
+function Quiz() {
+  //
+  //  Define the State variables
+  //
   const [fetchError, setFetchError] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [quizData, setQuizData] = useState([])
@@ -160,7 +166,7 @@ function Quiz1() {
     fetchItems()
   }, [])
   //
-  //  Populate data message if no data & RETURN
+  //  Populate data message if no data
   //
   let dataError
   isLoading
@@ -170,13 +176,17 @@ function Quiz1() {
     : fetchError
     ? (dataError = `Error: ${fetchError}`)
     : (dataError = null)
+  //
+  //  No data, return
+  //
   if (dataError) {
     if (log) console.log('dataError ', dataError)
+    return <p style={{ color: 'red' }}>{dataError}</p>
   }
   //
   //  Get the radio buttons first time
   //
-  if (!dataError && g_firstTime) {
+  if (g_firstTime) {
     g_firstTime = false
     DataReceived()
     getRadioButtons()
@@ -186,58 +196,49 @@ function Quiz1() {
   //...................................................................................
   return (
     <>
-      {/* //                                                                              */}
-      {/* //  No data                                                  */}
-      {/* //                                                                              */}
-      {dataError && <p style={{ color: 'red' }}>{dataError}</p>}
-      {/* //                                                                              */}
-      {/* //  Data Received                                                              */}
-      {/* //                                                                              */}
-      {!dataError && (
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={onSubmitForm}
-        >
-          {formik => (
-            <Form>
-              <main className=''>
-                {/*.................................................................................................*/}
-                {/*  Form Title */}
-                {/*.................................................................................................*/}
-                <legend className='py-2'>
-                  <h1 className='text-3xl '>Quiz questions {g_quizNum}</h1>
-                </legend>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmitForm}
+      >
+        {formik => (
+          <Form>
+            <main className=''>
+              {/*.................................................................................................*/}
+              {/*  Form Title */}
+              {/*.................................................................................................*/}
+              <legend className='py-2'>
+                <h1 className='text-3xl '>Quiz questions {g_quizNum}</h1>
+              </legend>
 
-                {/*.................................................................................................*/}
-                <QuizPanel row={quizRow} />
-                <FormikControl
-                  control='radio'
-                  label=''
-                  name='radioOption'
-                  options={radioOptions}
-                />
-                {/*.................................................................................................*/}
-                {/*  Message */}
-                {/*.................................................................................................*/}
-                <div className=''>
-                  <label className='message' htmlFor='text'>
-                    {form_message}
-                  </label>
-                </div>
-                {/*.................................................................................................*/}
-                {/*  Buttons */}
-                {/*.................................................................................................*/}
-                <button type='submit' value='Submit'>
-                  Next
-                </button>
-              </main>
-            </Form>
-          )}
-        </Formik>
-      )}
+              {/*.................................................................................................*/}
+              <QuizPanel row={quizRow} />
+              <FormikControl
+                control='radio'
+                label=''
+                name='radioOption'
+                options={radioOptions}
+              />
+              {/*.................................................................................................*/}
+              {/*  Message */}
+              {/*.................................................................................................*/}
+              <div className=''>
+                <label className='message' htmlFor='text'>
+                  {form_message}
+                </label>
+              </div>
+              {/*.................................................................................................*/}
+              {/*  Buttons */}
+              {/*.................................................................................................*/}
+              <button type='submit' value='Submit'>
+                Next
+              </button>
+            </main>
+          </Form>
+        )}
+      </Formik>
     </>
   )
 }
 
-export default Quiz1
+export default Quiz

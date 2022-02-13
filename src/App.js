@@ -1,18 +1,18 @@
-import React, { useState } from "react"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { QueryClientProvider, QueryClient } from "react-query"
-import { ReactQueryDevtools } from "react-query/devtools"
+import React, { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { QueryClientProvider, QueryClient } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 //
 //  Components
-
-import Navbar from "./components/Navbar"
-import QuestionList from "./components/QuestionList"
-import Mtable from "./components/Mtable"
-import TestRoute1 from "./components/TestRoute1"
-import TestRoute2 from "./components/TestRoute2"
-import Register from "./components/Register"
-import DataEntry from "./components/DataEntry"
-import Quiz from "./components/Quiz"
+//
+import Navbar from './components/Navbar/Navbar'
+import QuestionList from './components/QuestionList/QuestionList'
+import Mtable from './components/Mtable/Mtable'
+import TestRoute1 from './components/TestRoute1/TestRoute1'
+import TestRoute2 from './components/TestRoute2/TestRoute2'
+import Register from './components/Register/Register'
+import DataEntry from './components/DataEntry/DataEntry'
+import Quiz from './components/Quiz/Quiz'
 //
 // new instance of client Query
 //
@@ -24,7 +24,7 @@ function App() {
   //
   //  Set the form name
   //
-  const [form, setForm] = useState("")
+  const [form, setForm] = useState('')
   //
   //  return the rendered components
   //

@@ -1,6 +1,14 @@
-import React from "react"
-import NavbarLink from "./NavbarLink"
-
+//
+//  Libraries
+//
+import React from 'react'
+//
+//  Sub Components
+//
+import NavbarLink from './NavbarLink'
+//===================================================================================
+//=  This Component
+//===================================================================================
 const Navbar = ({ form, setForm }) => {
   return (
     <nav className='navbar'>

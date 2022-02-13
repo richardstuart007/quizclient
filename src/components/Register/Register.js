@@ -1,38 +1,41 @@
-import React, { useState } from "react"
+//
+//  Libraries
+//
+import React, { useState } from 'react'
 //..............................................................................
 //.  Initialisation
 //.............................................................................
 //
 // Constants
 //
-const { URL_REGISTER } = require("./constants.js")
-//...................................................................................
-//.  Main function
-//...................................................................................
+const { URL_REGISTER } = require('../constants.js')
+//===================================================================================
+//=  This Component
+//===================================================================================
 function Register() {
-  //...................................................................................
-  //.  Define the State variables
-  //...................................................................................
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [name, setName] = useState("")
-  const [id, setId] = useState("")
+  //
+  //  Define the State variables
+  //
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const [id, setId] = useState('')
   //
   // Form Message
   //
-  const [form_message, setForm_message] = useState("")
+  const [form_message, setForm_message] = useState('')
   //...................................................................................
   //.  Add to the database
   //...................................................................................
   const onSubmitRegister = () => {
     fetch(URL_REGISTER, {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: email,
         password: password,
-        name: name,
-      }),
+        name: name
+      })
     })
       .then(response => response.json())
 
@@ -41,7 +44,7 @@ function Register() {
           setId(user.id)
           setForm_message(`Data updated in Database with ID(${user.id})`)
         } else {
-          setForm_message("User not registered")
+          setForm_message('User not registered')
         }
       })
       .catch(err => {
@@ -51,7 +54,6 @@ function Register() {
   //...................................................................................
   //.  Create the form
   //...................................................................................
-
   return (
     <article className=''>
       <main className='pa4'>

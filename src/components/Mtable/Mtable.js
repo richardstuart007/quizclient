@@ -1,24 +1,31 @@
-import { useState, useEffect } from "react"
-import MaterialTable from "material-table"
-import { Checkbox } from "@material-ui/core"
-import { MtableCols } from "./MtableCols"
-import apiRequest from "./apiRequest"
-
+//
+//  Libraries
+//
+import { useState, useEffect } from 'react'
+import MaterialTable from 'material-table'
+import { Checkbox } from '@material-ui/core'
+import { MtableCols } from './MtableCols'
+//
+//  Sub Components
+//
+import apiRequest from '../apiRequest'
 //..............................................................................
 //.  Initialisation
 //.............................................................................
 //
 // Constants
 //
-const sqlClient = "Quiz/MaterialUI"
-const { URL_QUESTIONS } = require("./constants.js")
+const sqlClient = 'Quiz/MaterialUI'
+const { URL_QUESTIONS } = require('../constants.js')
 const maxRows = 200
 const log = true
-
+//===================================================================================
+//=  This Component
+//===================================================================================
 function Mtable() {
-  //...................................................................................
-  //.  Define the State variables
-  //...................................................................................
+  //
+  //  Define the State variables
+  //
   const [filteredData, setFilteredData] = useState([])
   const [filter, setFilter] = useState(true)
   const [fetchError, setFetchError] = useState(null)
@@ -32,11 +39,11 @@ function Mtable() {
         //
         //  Setup actions
         //
-        const method = "post"
+        const method = 'post'
         const body = {
           sqlClient: sqlClient,
-          sqlAction: "SELECTSQL",
-          sqlString: `* from questions order by qid OFFSET 0 ROWS FETCH NEXT ${maxRows} ROWS ONLY`,
+          sqlAction: 'SELECTSQL',
+          sqlString: `* from questions order by qid OFFSET 0 ROWS FETCH NEXT ${maxRows} ROWS ONLY`
         }
         //
         //  SQL database
@@ -45,7 +52,7 @@ function Mtable() {
         //
         //  Process results
         //
-        if (!resultData) throw Error("Did not receive expected data")
+        if (!resultData) throw Error('Did not receive expected data')
         setFilteredData(resultData)
         setFetchError(null)
       } catch (err) {
@@ -80,7 +87,7 @@ function Mtable() {
         qanswer_bad2,
         qanswer_bad3,
         qgroup1,
-        qgroup2,
+        qgroup2
       } = row
       if (log) {
         console.log(`Row data, id(${qid})  correct answer(${qanswer_correct})`)
@@ -91,11 +98,11 @@ function Mtable() {
       if (log) {
         console.log(`typeof ${typeof row} row(${row})`)
       }
-      const method = "post"
+      const method = 'post'
       const body = {
         sqlClient: sqlClient,
-        sqlAction: "UPDATE",
-        sqlTable: "questions",
+        sqlAction: 'UPDATE',
+        sqlTable: 'questions',
         sqlWhere: `qid = ${qid}`,
         sqlRow: {
           qowner: qowner,
@@ -109,8 +116,8 @@ function Mtable() {
           qanswer_bad2: qanswer_bad2,
           qanswer_bad3: qanswer_bad3,
           qgroup1: qgroup1,
-          qgroup2: qgroup2,
-        },
+          qgroup2: qgroup2
+        }
       }
 
       if (log) {
@@ -123,7 +130,7 @@ function Mtable() {
       //
       //  Update error
       //
-      if (!resultData) throw Error("Database not updated")
+      if (!resultData) throw Error('Database not updated')
       //
       //  Process results
       //
@@ -154,7 +161,7 @@ function Mtable() {
       {/* //  Loading or Fetching error                                                   */}
       {/* //                                                                              */}
       {isLoading && <p>Loading ...</p>}
-      {fetchError && <p style={{ color: "red" }}>{`Error: ${fetchError}`}</p>}
+      {fetchError && <p style={{ color: 'red' }}>{`Error: ${fetchError}`}</p>}
       {/* //                                                                              */}
       {/* //  Data Received                                                   */}
       {/* //                                                                              */}
@@ -168,7 +175,7 @@ function Mtable() {
               new Promise((resolve, reject) => {
                 const updatedRows = [
                   ...filteredData,
-                  { qid: Math.floor(Math.random() * 1000), ...newRow },
+                  { qid: Math.floor(Math.random() * 1000), ...newRow }
                 ]
                 setTimeout(() => {
                   setFilteredData(updatedRows)
@@ -215,13 +222,13 @@ function Mtable() {
                   setFilteredData(updatedRows)
                   resolve()
                 }, 2000)
-              }),
+              })
           }}
           options={{
             actionsColumnIndex: -1,
-            addRowPosition: "first",
+            addRowPosition: 'first',
             columnsButton: true,
-            filtering: filter,
+            filtering: filter
           }}
           actions={[
             {
@@ -229,12 +236,12 @@ function Mtable() {
                 <Checkbox
                   checked={filter}
                   onChange={handleChange}
-                  inputProps={{ "aria-label": "primary checkbox" }}
+                  inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
               ),
-              tooltip: "Hide/Show Filter option",
-              isFreeAction: true,
-            },
+              tooltip: 'Hide/Show Filter option',
+              isFreeAction: true
+            }
           ]}
         />
       )}

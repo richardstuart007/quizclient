@@ -1,5 +1,10 @@
-import React from "react"
-
+//
+//  Libraries
+//
+import React from 'react'
+//===================================================================================
+//=  This Component
+//===================================================================================
 const QuestionListItem = ({ question }) => {
   const {
     qid,
@@ -14,7 +19,7 @@ const QuestionListItem = ({ question }) => {
     qanswer_bad2,
     qanswer_bad3,
     qgroup1,
-    qgroup2,
+    qgroup2
   } = question
   return (
     <tr className='table-row'>
