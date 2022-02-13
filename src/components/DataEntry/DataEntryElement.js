@@ -6,7 +6,7 @@ import React from 'react'
 //  Sub Components
 //
 import { Field, ErrorMessage } from 'formik'
-import TextError from './Formik/TextError'
+import TextError from '../Formik/TextError'
 //===================================================================================
 //=  This Component
 //===================================================================================

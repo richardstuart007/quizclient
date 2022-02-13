@@ -13,6 +13,8 @@ import TestRoute2 from './components/TestRoute2/TestRoute2'
 import Register from './components/Register/Register'
 import DataEntry from './components/DataEntry/DataEntry'
 import Quiz from './components/Quiz/Quiz'
+import Create from './components/MaterialUI/pages/Create'
+import Notes from './components/MaterialUI/pages/Notes'
 //
 // new instance of client Query
 //
@@ -43,6 +45,8 @@ function App() {
                 <Route path='/Mtable' element={<Mtable />} />
                 <Route path='/Register' element={<Register />} />
                 <Route path='/DataEntry' element={<DataEntry />} />
+                <Route path='/Notes' element={<Notes />} />
+                <Route path='/Create' element={<Create />} />
                 <Route path='/' element={<QuestionList />} />
               </Routes>
             </div>

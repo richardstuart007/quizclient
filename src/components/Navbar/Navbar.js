@@ -62,6 +62,20 @@ const Navbar = ({ form, setForm }) => {
           link_form='Mtable'
           setForm={setForm}
         />
+        <NavbarLink
+          form={form}
+          link_to='/Create'
+          link_name='Create'
+          link_form='Create'
+          setForm={setForm}
+        />
+        <NavbarLink
+          form={form}
+          link_to='/Notes'
+          link_name='Notes'
+          link_form='Notes'
+          setForm={setForm}
+        />
       </div>
     </nav>
   )
