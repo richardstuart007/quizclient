@@ -22,7 +22,8 @@ const useStyles = makeStyles({
 
 export default function CreateElement() {
   const classes = useStyles()
-  const history = useNavigate()
+  const navigate = useNavigate()
+
   const [title, setTitle] = useState('')
   const [details, setDetails] = useState('')
   const [titleError, setTitleError] = useState(false)
@@ -41,11 +42,11 @@ export default function CreateElement() {
       setDetailsError(true)
     }
     if (title && details) {
-      fetch('http://localhost:8000/notes', {
+      fetch('http://localhost:8001/notes', {
         method: 'POST',
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify({ title, details, category })
-      }).then(() => history.push('/'))
+      }).then(() => navigate('/Notes'))
     }
   }
 

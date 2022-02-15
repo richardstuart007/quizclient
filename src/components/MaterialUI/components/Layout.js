@@ -12,6 +12,7 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import { format } from 'date-fns'
 import Avatar from '@material-ui/core/Avatar'
+import './index.css'
 
 const drawerWidth = 240
 
@@ -53,19 +54,19 @@ const useStyles = makeStyles(theme => {
 
 export default function Layout({ children }) {
   const classes = useStyles()
-  const history = useNavigate()
+  const navigate = useNavigate()
   const location = useLocation()
 
   const menuItems = [
     {
       text: 'My Notes',
       icon: <SubjectOutlined color='secondary' />,
-      path: '/mynotes'
+      path: '/Notes'
     },
     {
       text: 'Create Note',
       icon: <AddCircleOutlineOutlined color='secondary' />,
-      path: '/createnotes'
+      path: '/Create'
     }
   ]
 
@@ -83,7 +84,7 @@ export default function Layout({ children }) {
             Today is the {format(new Date(), 'do MMMM Y')}
           </Typography>
           <Typography>Mario</Typography>
-          <Avatar className={classes.avatar} src='/mario-av.png' />
+          <Avatar className={classes.avatar} src='./mario-av.png' />
         </Toolbar>
       </AppBar>
 
@@ -106,7 +107,7 @@ export default function Layout({ children }) {
             <ListItem
               button
               key={item.text}
-              onClick={() => history.push(item.path)}
+              onClick={() => navigate(item.path)}
               className={
                 location.pathname === item.path ? classes.active : null
               }

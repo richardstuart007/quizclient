@@ -44,21 +44,15 @@
     },
     {
       "title": "Richard",
-      "details": "Test",
-      "category": "work",
+      "details": "You must register your dog before it turns three months old.\nRegister your dog at the address where it spends most of its time.\nYou must microchip your dog within two months of registering it.\nIf you are under 16 years old, you must register the dog under your parent's or guardian's name.",
+      "category": "todos",
       "id": 8
     },
     {
-      "title": "x",
-      "details": "asdfsaasddfasdff asdf asfd",
-      "category": "money",
+      "title": "Dogs",
+      "details": "You must register your dog before it turns three months old.\nRegister your dog at the address where it spends most of its time.\nYou must microchip your dog within two months of registering it.\nIf you are under 16 years old, you must register the dog under your parent's or guardian's name.",
+      "category": "reminders",
       "id": 9
-    },
-    {
-      "title": "y",
-      "details": "Mario ipsum RGB mushroom 1-up. Cloud lakitu slide fire flower pipe jump swim, lava slide koopa troopa side-scrolling starman fire bar koopa paratroopa! Pipe cloud buzzy beetle koopa troopa game over, goomba invincible Mario green shell slide koopa paratroopa fire bar question block 1985 koopa troopa fireball Mushroom Kingdom. Lava Mushroom Kingdom.",
-      "category": "work",
-      "id": 10
     }
   ]
 }
