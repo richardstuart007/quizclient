@@ -7,7 +7,11 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import { AddCircleOutlineOutlined, SubjectOutlined } from '@material-ui/icons'
+import {
+  AddCircleOutlineOutlined,
+  SubjectOutlined,
+  ViewList
+} from '@material-ui/icons'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import { format } from 'date-fns'
@@ -67,6 +71,41 @@ export default function Layout({ children }) {
       text: 'Create Note',
       icon: <AddCircleOutlineOutlined color='secondary' />,
       path: '/Create'
+    },
+    {
+      text: 'QuestionList',
+      icon: <ViewList color='secondary' />,
+      path: '/QuestionList'
+    },
+    {
+      text: 'Quiz',
+      icon: <ViewList color='secondary' />,
+      path: '/Quiz'
+    },
+    {
+      text: 'DataEntry',
+      icon: <ViewList color='secondary' />,
+      path: '/DataEntry'
+    },
+    {
+      text: 'TestRoute1',
+      icon: <ViewList color='secondary' />,
+      path: '/TestRoute1'
+    },
+    {
+      text: 'TestRoute2',
+      icon: <ViewList color='secondary' />,
+      path: '/TestRoute2'
+    },
+    {
+      text: 'Mtable',
+      icon: <ViewList color='secondary' />,
+      path: '/Mtable'
+    },
+    {
+      text: 'Register',
+      icon: <ViewList color='secondary' />,
+      path: '/Register'
     }
   ]
 
@@ -97,7 +136,7 @@ export default function Layout({ children }) {
       >
         <div>
           <Typography variant='h5' className={classes.title}>
-            Ninja Notes
+            Quiz
           </Typography>
         </div>
 
