@@ -1,21 +1,23 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core'
-import Drawer from '@material-ui/core/Drawer'
-import Typography from '@material-ui/core/Typography'
+import {
+  makeStyles,
+  Drawer,
+  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  AppBar,
+  Toolbar,
+  Avatar
+} from '@material-ui/core'
 import { useNavigate, useLocation } from 'react-router-dom'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
 import {
   AddCircleOutlineOutlined,
   SubjectOutlined,
   ViewList
 } from '@material-ui/icons'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
 import { format } from 'date-fns'
-import Avatar from '@material-ui/core/Avatar'
 import './index.css'
 
 const drawerWidth = 240
