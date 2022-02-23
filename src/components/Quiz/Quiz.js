@@ -9,7 +9,6 @@ import * as Yup from 'yup'
 //
 import QuizPanel from './QuizPanel'
 import apiRequest from '../apiRequest'
-import FormikControl from '../Formik/FormikControl'
 //.............................................................................
 //.  Initialisation
 //.............................................................................
@@ -38,22 +37,23 @@ function Quiz() {
   const [isLoading, setIsLoading] = useState(true)
   const [quizData, setQuizData] = useState([])
   const [quizRow, setQuizRow] = useState(null)
-  const [radioOptions, setRadioOptions] = useState([])
+  const [countPass, setCountPass] = useState(0)
+  const [countTotal, setCountTotal] = useState(0)
   //
   // Form Message
   //
   const [form_message, setForm_message] = useState('')
-  //--------------------------------------------------------------------
-  //.  Formik
-  //--------------------------------------------------------------------
+  //
+  //  Formik
+  //
   const initialValues = {
     radioOption: ''
   }
   const validationSchema = Yup.object({
-    radioOption: Yup.string().required('Required')
+    radioOption: Yup.string()
   })
   //--------------------------------------------------------------------
-  //.  Initial load of data
+  //.  fetch data
   //--------------------------------------------------------------------
   const fetchItems = async () => {
     try {
@@ -85,20 +85,28 @@ function Quiz() {
       setIsLoading(false)
     }
   }
-
   //...................................................................................
   //.  Form Submit
   //...................................................................................
-  const onSubmitForm = values => {
+  const onSubmitForm = id => {
     //
     //  Check form
     //
-    if (log) console.log('Form data', values)
+    if (log) console.log('Form data', id)
     //
-    //  Reset form
+    //  Update counts
     //
-    g_row = g_row + 1
-    getRadioButtons()
+    setCountTotal(countTotal + 1)
+    if (id === 1) setCountPass(countPass + 1)
+    //
+    //  End of data/ Next row
+    //
+    if (g_row + 1 >= g_quizNum) {
+      alert('end of data')
+    } else {
+      g_row = g_row + 1
+      setQuizRow(quizData[g_row])
+    }
   }
   //...................................................................................
   //. Data Received
@@ -115,46 +123,12 @@ function Quiz() {
       setIsLoading(false)
     }
   }
-  //...................................................................................
-  //. Create the Radio buttons data
-  //...................................................................................
-  const getRadioButtons = () => {
-    try {
-      //
-      //  Deconstruct row
-      //
-      const l_quizRow = quizData[g_row]
-      setQuizRow(l_quizRow)
-      const { qanswer_correct, qanswer_bad1, qanswer_bad2, qanswer_bad3 } =
-        l_quizRow
-      //
-      //  Row Options array
-      //
-      let rowOptions = []
-      if (qanswer_correct) rowOptions.push(qanswer_correct)
-      if (qanswer_bad1) rowOptions.push(qanswer_bad1)
-      if (qanswer_bad2) rowOptions.push(qanswer_bad2)
-      if (qanswer_bad3) rowOptions.push(qanswer_bad3)
-      //
-      //  Radio buttons array/object
-      //
-      let l_radioOptions = []
-      let string = ''
-      let l_radioOptionsElement = {}
-      rowOptions.forEach((radioText, j) => {
-        string = `{"key":"${radioText}", "value":"${j + 1}"}`
-        l_radioOptionsElement = JSON.parse(string)
-        l_radioOptions.push(l_radioOptionsElement)
-      })
-      //
-      //  Create the buttons
-      //
-      setRadioOptions(l_radioOptions)
-    } catch (err) {
-      setFetchError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
+  //
+  //  Select an answer
+  //
+  const handleSelect = id => {
+    console.log(`ID selected ${id}`)
+    onSubmitForm(id)
   }
   //...................................................................................
   //.  Main Line
@@ -172,7 +146,7 @@ function Quiz() {
   isLoading
     ? (dataError = 'Loading ...')
     : !quizData
-    ? (dataError = 'No Row of data received ...')
+    ? (dataError = 'Quiz question empty ...')
     : fetchError
     ? (dataError = `Error: ${fetchError}`)
     : (dataError = null)
@@ -184,23 +158,34 @@ function Quiz() {
     return <p style={{ color: 'red' }}>{dataError}</p>
   }
   //
-  //  Get the radio buttons first time
+  //  Get the data first time
   //
   if (g_firstTime) {
     g_firstTime = false
     DataReceived()
-    getRadioButtons()
+    setQuizRow(quizData[g_row])
+  }
+  //
+  //  Populate data message if no data yet
+  //
+  if (!quizRow) {
+    dataError = 'Loading ...'
+    if (log) console.log('dataError ', dataError)
+    return <p style={{ color: 'red' }}>{dataError}</p>
+  }
+  //
+  //  Title
+  //
+  let title = `Quiz questions ${g_quizNum}`
+  if (countTotal > 0) {
+    title += `- Passed ${countPass}/${countTotal}`
   }
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={onSubmitForm}
-      >
+      <Formik initialValues={initialValues} validationSchema={validationSchema}>
         {formik => (
           <Form>
             <main className=''>
@@ -208,17 +193,13 @@ function Quiz() {
               {/*  Form Title */}
               {/*.................................................................................................*/}
               <legend className='py-2'>
-                <h1 className='text-3xl '>Quiz questions {g_quizNum}</h1>
+                <h1 className='text-3xl '>{title} </h1>
               </legend>
 
               {/*.................................................................................................*/}
-              <QuizPanel row={quizRow} />
-              <FormikControl
-                control='radio'
-                label=''
-                name='radioOption'
-                options={radioOptions}
-              />
+              {/*  Quiz panel */}
+              {/*.................................................................................................*/}
+              <QuizPanel row={quizRow} handleSelect={handleSelect} />
               {/*.................................................................................................*/}
               {/*  Message */}
               {/*.................................................................................................*/}
@@ -227,12 +208,6 @@ function Quiz() {
                   {form_message}
                 </label>
               </div>
-              {/*.................................................................................................*/}
-              {/*  Buttons */}
-              {/*.................................................................................................*/}
-              <button type='submit' value='Submit'>
-                Next
-              </button>
             </main>
           </Form>
         )}

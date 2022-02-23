@@ -29,7 +29,7 @@ let g_firstTime = true
 //===================================================================================
 //=  This Component
 //===================================================================================
-function Quiz2() {
+function Quiz() {
   //
   //  Define the State variables
   //
@@ -109,23 +109,8 @@ function Quiz2() {
     }
   }
   //...................................................................................
-  //. Data Received
+  //. Answer Selected
   //...................................................................................
-  const DataReceived = () => {
-    try {
-      //
-      //  Numer of rows
-      //
-      g_quizNum = quizData.length
-    } catch (err) {
-      setFetchError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-  //
-  //  Select an answer
-  //
   const handleSelect = id => {
     console.log(`ID selected ${id}`)
     onSubmitForm(id)
@@ -142,36 +127,36 @@ function Quiz2() {
   //
   //  Populate data message if no data
   //
-  let dataError
+  let dataStatus
   isLoading
-    ? (dataError = 'Loading ...')
+    ? (dataStatus = 'Loading ...')
     : !quizData
-    ? (dataError = 'Quiz question empty ...')
+    ? (dataStatus = 'Quiz question empty ...')
     : fetchError
-    ? (dataError = `Error: ${fetchError}`)
-    : (dataError = null)
+    ? (dataStatus = `Error: ${fetchError}`)
+    : (dataStatus = null)
   //
   //  No data, return
   //
-  if (dataError) {
-    if (log) console.log('dataError ', dataError)
-    return <p style={{ color: 'red' }}>{dataError}</p>
+  if (dataStatus) {
+    if (log) console.log('dataStatus ', dataStatus)
+    return <p style={{ color: 'red' }}>{dataStatus}</p>
   }
   //
   //  Get the data first time
   //
   if (g_firstTime) {
     g_firstTime = false
-    DataReceived()
+    g_quizNum = quizData.length
     setQuizRow(quizData[g_row])
   }
   //
   //  Populate data message if no data yet
   //
   if (!quizRow) {
-    dataError = 'Loading ...'
-    if (log) console.log('dataError ', dataError)
-    return <p style={{ color: 'red' }}>{dataError}</p>
+    dataStatus = 'Loading ...'
+    if (log) console.log('dataStatus ', dataStatus)
+    return <p style={{ color: 'red' }}>{dataStatus}</p>
   }
   //
   //  Title
@@ -216,4 +201,4 @@ function Quiz2() {
   )
 }
 
-export default Quiz2
+export default Quiz
