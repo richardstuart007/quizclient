@@ -62,16 +62,18 @@ const QuizPanel = ({ row, handleSelect }) => {
   //  Format Panel
   //
   return (
-    <div className='MainPanel'>
-      <p>{qid} </p>
-      <p>{qtitle} </p>
-      <p>{qdetail} </p>
-      <br></br>
-      <h2>Answers</h2> <br></br>
+    <>
+      <div className='MainPanel'>
+        <p>{qid} </p>
+        <p>{qtitle} </p>
+        <p>{qdetail} </p>
+        <br></br>
+        <h2>Click on an answer to select</h2> <br></br>
+      </div>
       {Answers.map(answer => (
         <QuizCard key={answer.id} answer={answer} handleSelect={handleSelect} />
       ))}
-    </div>
+    </>
   )
 }
 

@@ -37,6 +37,8 @@ function Quiz2() {
   const [isLoading, setIsLoading] = useState(true)
   const [quizData, setQuizData] = useState([])
   const [quizRow, setQuizRow] = useState(null)
+  const [countPass, setCountPass] = useState(0)
+  const [countTotal, setCountTotal] = useState(0)
   //
   // Form Message
   //
@@ -86,16 +88,25 @@ function Quiz2() {
   //...................................................................................
   //.  Form Submit
   //...................................................................................
-  const onSubmitForm = values => {
+  const onSubmitForm = id => {
     //
     //  Check form
     //
-    if (log) console.log('Form data', values)
+    if (log) console.log('Form data', id)
     //
-    //  Next Row
+    //  Update counts
     //
-    g_row = g_row + 1
-    setQuizRow(quizData[g_row])
+    setCountTotal(countTotal + 1)
+    if (id === 1) setCountPass(countPass + 1)
+    //
+    //  End of data/ Next row
+    //
+    if (g_row + 1 >= g_quizNum) {
+      alert('end of data')
+    } else {
+      g_row = g_row + 1
+      setQuizRow(quizData[g_row])
+    }
   }
   //...................................................................................
   //. Data Received
@@ -117,6 +128,7 @@ function Quiz2() {
   //
   const handleSelect = id => {
     console.log(`ID selected ${id}`)
+    onSubmitForm(id)
   }
   //...................................................................................
   //.  Main Line
@@ -134,7 +146,7 @@ function Quiz2() {
   isLoading
     ? (dataError = 'Loading ...')
     : !quizData
-    ? (dataError = 'No Row of data received ...')
+    ? (dataError = 'Quiz question empty ...')
     : fetchError
     ? (dataError = `Error: ${fetchError}`)
     : (dataError = null)
@@ -146,23 +158,34 @@ function Quiz2() {
     return <p style={{ color: 'red' }}>{dataError}</p>
   }
   //
-  //  Get the radio buttons first time
+  //  Get the data first time
   //
   if (g_firstTime) {
     g_firstTime = false
     DataReceived()
     setQuizRow(quizData[g_row])
   }
+  //
+  //  Populate data message if no data yet
+  //
+  if (!quizRow) {
+    dataError = 'Loading ...'
+    if (log) console.log('dataError ', dataError)
+    return <p style={{ color: 'red' }}>{dataError}</p>
+  }
+  //
+  //  Title
+  //
+  let title = `Quiz questions ${g_quizNum}`
+  if (countTotal > 0) {
+    title += `- Passed ${countPass}/${countTotal}`
+  }
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={onSubmitForm}
-      >
+      <Formik initialValues={initialValues} validationSchema={validationSchema}>
         {formik => (
           <Form>
             <main className=''>
@@ -170,7 +193,7 @@ function Quiz2() {
               {/*  Form Title */}
               {/*.................................................................................................*/}
               <legend className='py-2'>
-                <h1 className='text-3xl '>Quiz questions {g_quizNum}</h1>
+                <h1 className='text-3xl '>{title} </h1>
               </legend>
 
               {/*.................................................................................................*/}
@@ -185,12 +208,6 @@ function Quiz2() {
                   {form_message}
                 </label>
               </div>
-              {/*.................................................................................................*/}
-              {/*  Buttons */}
-              {/*.................................................................................................*/}
-              <button type='submit' value='Submit'>
-                Next
-              </button>
             </main>
           </Form>
         )}

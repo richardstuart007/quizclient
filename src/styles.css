@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -45,9 +45,9 @@ button[disabled] {
 }
 
 button,
-[type="button"],
-[type="reset"],
-[type="submit"] {
+[type='button'],
+[type='reset'],
+[type='submit'] {
   background-color: pink;
 }
 
@@ -68,39 +68,10 @@ button,
   margin: 10px 0;
   color: #ffff57;
 }
+.answer {
+  margin: 20px 0;
+}
 
-.navbar {
-  padding-bottom: 5px;
-  display: flex;
-  max-width: 600px;
-  justify-content: left;
-}
-.navbar .links {
-  display: flex;
-}
-.navbar .link {
-  margin-right: 10px;
-  background: pink;
-  border: 1px solid rgb(22, 129, 58);
-  border-radius: 20px;
-  padding: 4px;
-  color: rgb(22, 129, 58);
-  cursor: pointer;
-}
-.navbar .disabled {
-  margin-right: 10px;
-  background: pink;
-  border: 1px solid rgb(22, 129, 58);
-  border-radius: 20px;
-  padding: 4px;
-  color: rgb(157, 160, 158);
-  opacity: 0.2;
-  cursor: not-allowed;
-}
-.navbar a:hover {
-  color: #f1356d;
-  border-color: rgba(119, 96, 96, 0.322);
-}
 .inputdata {
   background: whitesmoke;
 }
@@ -112,7 +83,7 @@ button,
   box-sizing: border-box;
 }
 
-input[type="text"],
+input[type='text'],
 select,
 textarea {
   padding: 2px;
@@ -120,7 +91,7 @@ textarea {
   border-radius: 4px;
 }
 
-input[type="submit"] {
+input[type='submit'] {
   background-color: pink;
   color: white;
   padding: 12px 20px;
@@ -130,7 +101,7 @@ input[type="submit"] {
   float: right;
 }
 
-input[type="submit"]:hover {
+input[type='submit']:hover {
   background-color: #45a049;
 }
 .col-10 {
@@ -165,7 +136,7 @@ input[type="submit"]:hover {
 
 /* Clear floats after the columns */
 .row:after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
@@ -174,7 +145,7 @@ input[type="submit"]:hover {
 @media screen and (max-width: 600px) {
   .col-25,
   .col-75,
-  input[type="submit"] {
+  input[type='submit'] {
     width: 100%;
     margin-top: 0;
   }
@@ -222,8 +193,8 @@ label {
   padding: 6px 12px;
 }
 
-input[type="text"],
-input[type="email"],
+input[type='text'],
+input[type='email'],
 textarea {
   padding: 6px 12px;
   color: #555;
