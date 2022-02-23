@@ -5,13 +5,17 @@ import NoteCard from './NoteCard'
 
 export default function NotesElement() {
   const [notes, setNotes] = useState([])
-
+  //
+  //  Load notes
+  //
   useEffect(() => {
     fetch('http://localhost:8001/notes')
       .then(res => res.json())
       .then(data => setNotes(data))
   }, [])
-
+  //
+  //  Delete Note
+  //
   const handleDelete = async id => {
     await fetch('http://localhost:8001/notes/' + id, {
       method: 'DELETE'

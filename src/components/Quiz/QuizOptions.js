@@ -2,30 +2,54 @@
 //  Libraries
 //
 import React from 'react'
+//
+//  Sub Components
+//
+import QuizCard from './QuizCard'
 //..............................................................................
 //.  Initialisation
 //.............................................................................
 //
 // Constants
 //
-const log = false
+const log = true
 //===================================================================================
 //=  This Component
 //===================================================================================
-const QuizOptions = ({ row }) => {
+const QuizOptions = ({ row, handleSelect }) => {
   //
   //  Deconstruct row
   //
   if (log) console.log('row ', row)
   const { qanswer_correct, qanswer_bad1, qanswer_bad2, qanswer_bad3 } = row
   //
-  //  Row Options array
+  //  Answers array
   //
-  let rowOptions = []
-  if (qanswer_correct) rowOptions.push(qanswer_correct)
-  if (qanswer_bad1) rowOptions.push(qanswer_bad1)
-  if (qanswer_bad2) rowOptions.push(qanswer_bad2)
-  if (qanswer_bad3) rowOptions.push(qanswer_bad3)
+  let Answers = []
+  let j = 0
+  loadAnswers(qanswer_correct)
+  loadAnswers(qanswer_bad1)
+  loadAnswers(qanswer_bad2)
+  loadAnswers(qanswer_bad3)
+  //
+  //  Load Answers array with answer element
+  //
+  function loadAnswers(answer) {
+    if (answer) {
+      j++
+      const ansObj = {
+        random: Math.random(),
+        id: j,
+        details: answer
+      }
+      Answers.push(ansObj)
+    }
+  }
+  //
+  //  Sort the Answers by the random sort id
+  //
+  Answers.sort((a, b) => (a.random > b.random ? 1 : -1))
+  if (log) console.log(Answers)
   //
   //  Format Panel
   //
@@ -33,10 +57,9 @@ const QuizOptions = ({ row }) => {
     <div className='MainPanel'>
       <br></br>
       <h2>Answers</h2> <br></br>
-      <p>{qanswer_correct} </p> <br></br>
-      <p>{qanswer_bad1} </p> <br></br>
-      <p>{qanswer_bad2} </p> <br></br>
-      <p>{qanswer_bad3} </p> <br></br>
+      {Answers.map(answer => (
+        <QuizCard key={answer.id} answer={answer} handleSelect={handleSelect} />
+      ))}
     </div>
   )
 }
