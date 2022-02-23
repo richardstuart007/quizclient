@@ -100,6 +100,11 @@ export default function Layout({ children }) {
       path: '/TestRoute2'
     },
     {
+      text: 'TestRoute3',
+      icon: <ViewList color='secondary' />,
+      path: '/TestRoute3'
+    },
+    {
       text: 'Mtable',
       icon: <ViewList color='secondary' />,
       path: '/Mtable'

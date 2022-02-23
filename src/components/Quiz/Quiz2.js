@@ -8,8 +8,8 @@ import * as Yup from 'yup'
 //  Sub Components
 //
 import QuizPanel from './QuizPanel'
+import QuizOptions from './QuizOptions'
 import apiRequest from '../apiRequest'
-import FormikControl from '../Formik/FormikControl'
 //.............................................................................
 //.  Initialisation
 //.............................................................................
@@ -38,7 +38,6 @@ function Quiz2() {
   const [isLoading, setIsLoading] = useState(true)
   const [quizData, setQuizData] = useState([])
   const [quizRow, setQuizRow] = useState(null)
-  const [radioOptions, setRadioOptions] = useState([])
   //
   // Form Message
   //
@@ -50,7 +49,8 @@ function Quiz2() {
     radioOption: ''
   }
   const validationSchema = Yup.object({
-    radioOption: Yup.string().required('Required')
+    // radioOption: Yup.string().required('Required')
+    radioOption: Yup.string()
   })
   //--------------------------------------------------------------------
   //.  fetch data
@@ -94,10 +94,10 @@ function Quiz2() {
     //
     if (log) console.log('Form data', values)
     //
-    //  Reset form
+    //  Next Row
     //
     g_row = g_row + 1
-    getRadioButtons()
+    setQuizRow(quizData[g_row])
   }
   //...................................................................................
   //. Data Received
@@ -114,47 +114,7 @@ function Quiz2() {
       setIsLoading(false)
     }
   }
-  //...................................................................................
-  //. Create the Radio buttons data
-  //...................................................................................
-  const getRadioButtons = () => {
-    try {
-      //
-      //  Deconstruct row
-      //
-      const l_quizRow = quizData[g_row]
-      setQuizRow(l_quizRow)
-      const { qanswer_correct, qanswer_bad1, qanswer_bad2, qanswer_bad3 } =
-        l_quizRow
-      //
-      //  Row Options array
-      //
-      let rowOptions = []
-      if (qanswer_correct) rowOptions.push(qanswer_correct)
-      if (qanswer_bad1) rowOptions.push(qanswer_bad1)
-      if (qanswer_bad2) rowOptions.push(qanswer_bad2)
-      if (qanswer_bad3) rowOptions.push(qanswer_bad3)
-      //
-      //  Radio buttons array/object
-      //
-      let l_radioOptions = []
-      let string = ''
-      let l_radioOptionsElement = {}
-      rowOptions.forEach((radioText, j) => {
-        string = `{"key":"${radioText}", "value":"${j + 1}"}`
-        l_radioOptionsElement = JSON.parse(string)
-        l_radioOptions.push(l_radioOptionsElement)
-      })
-      //
-      //  Create the buttons
-      //
-      setRadioOptions(l_radioOptions)
-    } catch (err) {
-      setFetchError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+
   //...................................................................................
   //.  Main Line
   //...................................................................................
@@ -188,7 +148,7 @@ function Quiz2() {
   if (g_firstTime) {
     g_firstTime = false
     DataReceived()
-    getRadioButtons()
+    setQuizRow(quizData[g_row])
   }
   //...................................................................................
   //.  Render the form
@@ -211,13 +171,13 @@ function Quiz2() {
               </legend>
 
               {/*.................................................................................................*/}
+              {/*  Panel Header */}
+              {/*.................................................................................................*/}
               <QuizPanel row={quizRow} />
-              <FormikControl
-                control='radio'
-                label=''
-                name='radioOption'
-                options={radioOptions}
-              />
+              {/*.................................................................................................*/}
+              {/*  Options */}
+              {/*.................................................................................................*/}
+              <QuizOptions row={quizRow} />
               {/*.................................................................................................*/}
               {/*  Message */}
               {/*.................................................................................................*/}
