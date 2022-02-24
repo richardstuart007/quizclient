@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from 'react-query'
 import axios from 'axios'
+import { ReactQueryDevtools } from 'react-query/devtools'
 //
 //  Sub Components
 //
@@ -177,6 +178,7 @@ function QuestionList() {
           {/*--------------------------------------------------------------*/}
         </div>
       </>
+      <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
     </div>
   )
 }

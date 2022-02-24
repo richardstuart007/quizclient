@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClientProvider, QueryClient } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
+// import { ReactQueryDevtools } from 'react-query/devtools'
 //
 //  Components
 //
@@ -76,7 +76,7 @@ function App() {
             </ThemeProvider>
           </div>
         </BrowserRouter>
-        <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
+        {/* <ReactQueryDevtools initialIsOpen={false} position='bottom-right' /> */}
       </QueryClientProvider>
     </>
   )
