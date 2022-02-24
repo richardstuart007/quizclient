@@ -15,10 +15,11 @@ import apiRequest from '../apiRequest'
 //
 // Constants
 //
-const { URL_QUESTIONS } = require('../constants.js')
 const sqlClient = 'Quiz/Quiz'
-const sqlTable = 'questions'
-const maxRows = 200
+const { URL_QUESTIONS } = require('../constants.js')
+const { SQL_TABLE } = require('../constants.js')
+const { SQL_MAXROWS } = require('../constants.js')
+
 const log = true
 //
 //  Global fields
@@ -64,7 +65,7 @@ function Quiz() {
       const body = {
         sqlClient: sqlClient,
         sqlAction: 'SELECTSQL',
-        sqlString: `* from ${sqlTable} order by qid OFFSET 0 ROWS FETCH NEXT ${maxRows} ROWS ONLY`
+        sqlString: `* from ${SQL_TABLE} order by qid OFFSET 0 ROWS FETCH NEXT ${SQL_MAXROWS} ROWS ONLY`
       }
       //
       //  SQL database
@@ -161,9 +162,10 @@ function Quiz() {
   //
   //  Title
   //
-  let title = `Quiz questions ${g_quizNum}`
+  let title = `Quiz: ${g_quizNum} questions `
   if (countTotal > 0) {
-    title += `- Passed ${countPass}/${countTotal}`
+    const l_passPercentage = Math.ceil((100 * countPass) / countTotal)
+    title += `:   running score ${countPass}/${countTotal} = ${l_passPercentage}%`
   }
   //...................................................................................
   //.  Render the form
