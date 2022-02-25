@@ -22,13 +22,14 @@ const { SQL_MAXROWS } = require('../constants.js')
 //
 //  Debug logging
 //
-const log1 = true
-const log2 = true
+const log1 = false
+const log2 = false
 const log3 = true
 //
 //  Global fields (g_)
 //
 let g_row = 0
+let g_total = 0
 let g_quizNum = 0
 let g_firstTime = true
 let g_history = []
@@ -44,7 +45,9 @@ function Quiz() {
   const [quizData, setQuizData] = useState([])
   const [quizRow, setQuizRow] = useState(null)
   const [countPass, setCountPass] = useState(0)
-  const [countTotal, setCountTotal] = useState(0)
+  //
+  //  Define the Store
+  //
   const valtioSnap = useSnapshot(valtioStore)
   //
   // Form Message
@@ -105,7 +108,7 @@ function Quiz() {
     //
     let count = 0
     const interval1 = setInterval(function () {
-      count = count + 1
+      count += 1
       if (valtioSnap.v_quizData[0]) {
         if (log3) {
           console.log('Interval wait store', count)
@@ -123,7 +126,7 @@ function Quiz() {
     //
     count = 0
     const interval2 = setInterval(function () {
-      count = count + 1
+      count += 1
       if (quizRow) {
         if (log3) {
           console.log('Interval wait quizRow', count)
@@ -144,7 +147,6 @@ function Quiz() {
     //
     //  Update counts
     //
-    setCountTotal(countTotal + 1)
     if (id === 1) {
       setForm_message('Well done, previous answer correct')
       setCountPass(countPass + 1)
@@ -155,25 +157,27 @@ function Quiz() {
     //   Write History
     //
     g_history[g_row] = id
-    //
-    //  Next row
-    //
-    if (g_row + 1 < g_quizNum) {
-      g_row = g_row + 1
-      setQuizRow(quizData[g_row])
-    }
+    valtioStore.v_history[g_row] = id
+    g_total += 1
     //
     //  End of data
     //
-    else {
+    if (g_row + 1 >= g_quizNum) {
+      if (log3) console.log('v_history', valtioSnap.v_history)
       alert('end of data')
+      return
     }
+    //
+    //  Next row
+    //
+    g_row += 1
+    setQuizRow(quizData[g_row])
   }
   //...................................................................................
   //. Answer Selected
   //...................................................................................
   const handleSelect = id => {
-    console.log(`ID selected ${id}`)
+    if (log2) console.log(`ID selected ${id}`)
     onSubmitForm(id)
   }
   //...................................................................................
@@ -212,9 +216,9 @@ function Quiz() {
   //  Title
   //
   let title = `Quiz: ${g_quizNum} questions `
-  if (countTotal > 0) {
-    const passPercentage = Math.ceil((100 * countPass) / countTotal)
-    title += `:   running score ${countPass}/${countTotal} = ${passPercentage}%`
+  if (g_total > 0) {
+    const passPercentage = Math.ceil((100 * countPass) / g_total)
+    title += `:   running score ${countPass}/${g_total} = ${passPercentage}%`
   }
   //...................................................................................
   //.  Render the form

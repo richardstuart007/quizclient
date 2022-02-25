@@ -2,35 +2,40 @@
 //  Libraries
 //
 import { useState, useEffect } from 'react'
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
+import { valtioStore } from './ValtioStore'
+import { useSnapshot } from 'valtio'
 //
 //  Sub Components
 //
 import QuizPanel from './QuizPanel'
 import apiRequest from '../apiRequest'
-import FormikControl from '../Formik/FormikControl'
 //.............................................................................
 //.  Initialisation
 //.............................................................................
 //
 // Constants
 //
-const { URL_QUESTIONS } = require('../constants.js')
 const sqlClient = 'Quiz/Quiz'
-const sqlTable = 'questions'
-const maxRows = 200
-const log = true
+const { URL_QUESTIONS } = require('../constants.js')
+const { SQL_TABLE } = require('../constants.js')
+const { SQL_MAXROWS } = require('../constants.js')
 //
-//  Global fields
+//  Debug logging
+//
+const log1 = true
+const log2 = true
+const log3 = true
+//
+//  Global fields (g_)
 //
 let g_row = 0
 let g_quizNum = 0
 let g_firstTime = true
+let g_history = []
 //===================================================================================
 //=  This Component
 //===================================================================================
-function Quiz1() {
+function Quiz() {
   //
   //  Define the State variables
   //
@@ -38,20 +43,13 @@ function Quiz1() {
   const [isLoading, setIsLoading] = useState(true)
   const [quizData, setQuizData] = useState([])
   const [quizRow, setQuizRow] = useState(null)
-  const [radioOptions, setRadioOptions] = useState([])
+  const [countPass, setCountPass] = useState(0)
+  const [countTotal, setCountTotal] = useState(0)
+  const valtioSnap = useSnapshot(valtioStore)
   //
   // Form Message
   //
   const [form_message, setForm_message] = useState('')
-  //
-  //  Formik
-  //
-  const initialValues = {
-    radioOption: ''
-  }
-  const validationSchema = Yup.object({
-    radioOption: Yup.string().required('Required')
-  })
   //--------------------------------------------------------------------
   //.  fetch data
   //--------------------------------------------------------------------
@@ -64,19 +62,22 @@ function Quiz1() {
       const body = {
         sqlClient: sqlClient,
         sqlAction: 'SELECTSQL',
-        sqlString: `* from ${sqlTable} order by qid OFFSET 0 ROWS FETCH NEXT ${maxRows} ROWS ONLY`
+        sqlString: `* from ${SQL_TABLE} order by qid OFFSET 0 ROWS FETCH NEXT ${SQL_MAXROWS} ROWS ONLY`
       }
       //
       //  SQL database
       //
       const resultData = await apiRequest(method, URL_QUESTIONS, body)
       //
-      //  Process results
+      //  No data returned
       //
       if (!resultData) {
         setForm_message('Did not receive expected data')
         throw Error('Did not receive expected data')
       }
+      //
+      //  Process results
+      //
       setQuizData(resultData)
       setFetchError(null)
     } catch (err) {
@@ -86,74 +87,94 @@ function Quiz1() {
     }
   }
   //...................................................................................
+  //.  First time data received
+  //...................................................................................
+  const firstLoad = () => {
+    if (log3) console.log('g_firstTime', g_firstTime)
+    g_firstTime = false
+    //
+    //  Number of questions
+    //
+    g_quizNum = quizData.length
+    //
+    // update Store
+    //
+    valtioStore.v_quizData = quizData
+    //
+    //  Check/wait for updates to occur
+    //
+    let count = 0
+    const interval1 = setInterval(function () {
+      count = count + 1
+      if (valtioSnap.v_quizData[0]) {
+        if (log3) {
+          console.log('Interval wait store', count)
+          console.log('v_quizData', valtioSnap.v_quizData[0])
+        }
+        clearInterval(interval1)
+      }
+    }, 1)
+    //
+    // Update State
+    //
+    setQuizRow(quizData[0])
+    //
+    //  Check/wait for updates to occur
+    //
+    count = 0
+    const interval2 = setInterval(function () {
+      count = count + 1
+      if (quizRow) {
+        if (log3) {
+          console.log('Interval wait quizRow', count)
+          console.log('quizRow', quizRow)
+        }
+        clearInterval(interval2)
+      }
+    }, 1)
+  }
+  //...................................................................................
   //.  Form Submit
   //...................................................................................
-  const onSubmitForm = values => {
+  const onSubmitForm = id => {
     //
     //  Check form
     //
-    if (log) console.log('Form data', values)
+    if (log2) console.log('Form data', id)
     //
-    //  Reset form
+    //  Update counts
     //
-    g_row = g_row + 1
-    getRadioButtons()
-  }
-  //...................................................................................
-  //. Data Received
-  //...................................................................................
-  const DataReceived = () => {
-    try {
-      //
-      //  Numer of rows
-      //
-      g_quizNum = quizData.length
-    } catch (err) {
-      setFetchError(err.message)
-    } finally {
-      setIsLoading(false)
+    setCountTotal(countTotal + 1)
+    if (id === 1) {
+      setForm_message('Well done, previous answer correct')
+      setCountPass(countPass + 1)
+    } else {
+      setForm_message('')
+    }
+    //
+    //   Write History
+    //
+    g_history[g_row] = id
+    //
+    //  Next row
+    //
+    if (g_row + 1 < g_quizNum) {
+      g_row = g_row + 1
+      setQuizRow(quizData[g_row])
+    }
+    //
+    //  End of data
+    //
+    else {
+      alert('end of data')
     }
   }
   //...................................................................................
-  //. Create the Radio buttons data
+  //. Answer Selected
   //...................................................................................
-  const getRadioButtons = () => {
-    try {
-      //
-      //  Deconstruct row
-      //
-      const l_quizRow = quizData[g_row]
-      setQuizRow(l_quizRow)
-      const { qanswer_correct, qanswer_bad1, qanswer_bad2, qanswer_bad3 } =
-        l_quizRow
-      //
-      //  Row Options array
-      //
-      let rowOptions = []
-      if (qanswer_correct) rowOptions.push(qanswer_correct)
-      if (qanswer_bad1) rowOptions.push(qanswer_bad1)
-      if (qanswer_bad2) rowOptions.push(qanswer_bad2)
-      if (qanswer_bad3) rowOptions.push(qanswer_bad3)
-      //
-      //  Radio buttons array/object
-      //
-      let l_radioOptions = []
-      let string = ''
-      let l_radioOptionsElement = {}
-      rowOptions.forEach((radioText, j) => {
-        string = `{"key":"${radioText}", "value":"${j + 1}"}`
-        l_radioOptionsElement = JSON.parse(string)
-        l_radioOptions.push(l_radioOptionsElement)
-      })
-      //
-      //  Create the buttons
-      //
-      setRadioOptions(l_radioOptions)
-    } catch (err) {
-      setFetchError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
+  const handleSelect = id => {
+    console.log(`ID selected ${id}`)
+    onSubmitForm(id)
   }
   //...................................................................................
   //.  Main Line
@@ -162,82 +183,67 @@ function Quiz1() {
   //  Initial fetch of data
   //
   useEffect(() => {
+    g_firstTime = true
     fetchItems()
   }, [])
   //
   //  Populate data message if no data
   //
-  let dataError
+  let dataStatus
   isLoading
-    ? (dataError = 'Loading ...')
+    ? (dataStatus = 'Loading ...')
     : !quizData
-    ? (dataError = 'No Row of data received ...')
+    ? (dataStatus = 'Quiz question empty ...')
     : fetchError
-    ? (dataError = `Error: ${fetchError}`)
-    : (dataError = null)
+    ? (dataStatus = `Error: ${fetchError}`)
+    : (dataStatus = null)
   //
-  //  No data, return
+  //  Status error return
   //
-  if (dataError) {
-    if (log) console.log('dataError ', dataError)
-    return <p style={{ color: 'red' }}>{dataError}</p>
+  if (dataStatus) {
+    if (log2) console.log('dataStatus ', dataStatus)
+    return <p style={{ color: 'red' }}>{dataStatus}</p>
   }
   //
-  //  Get the radio buttons first time
+  //  Load the first question
   //
-  if (g_firstTime) {
-    g_firstTime = false
-    DataReceived()
-    getRadioButtons()
+  if (g_firstTime) firstLoad()
+  //
+  //  Title
+  //
+  let title = `Quiz: ${g_quizNum} questions `
+  if (countTotal > 0) {
+    const passPercentage = Math.ceil((100 * countPass) / countTotal)
+    title += `:   running score ${countPass}/${countTotal} = ${passPercentage}%`
   }
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={onSubmitForm}
-      >
-        {formik => (
-          <Form>
-            <main className=''>
-              {/*.................................................................................................*/}
-              {/*  Form Title */}
-              {/*.................................................................................................*/}
-              <legend className='py-2'>
-                <h1 className='text-3xl '>Quiz questions {g_quizNum}</h1>
-              </legend>
+      <main className=''>
+        {/*.................................................................................................*/}
+        {/*  Form Title */}
+        {/*.................................................................................................*/}
+        <legend className='py-2'>
+          <h1 className='text-3xl '>{title} </h1>
+        </legend>
 
-              {/*.................................................................................................*/}
-              <QuizPanel row={quizRow} />
-              <FormikControl
-                control='radio'
-                label=''
-                name='radioOption'
-                options={radioOptions}
-              />
-              {/*.................................................................................................*/}
-              {/*  Message */}
-              {/*.................................................................................................*/}
-              <div className=''>
-                <label className='message' htmlFor='text'>
-                  {form_message}
-                </label>
-              </div>
-              {/*.................................................................................................*/}
-              {/*  Buttons */}
-              {/*.................................................................................................*/}
-              <button type='submit' value='Submit'>
-                Next
-              </button>
-            </main>
-          </Form>
-        )}
-      </Formik>
+        {/*.................................................................................................*/}
+        {/*  Quiz panel */}
+        {/*.................................................................................................*/}
+        <QuizPanel row={quizRow} handleSelect={handleSelect} />
+        {/*.................................................................................................*/}
+        {/*  Message */}
+        {/*.................................................................................................*/}
+        <div className=''>
+          <label className='message' htmlFor='text'>
+            {form_message}
+          </label>
+        </div>
+      </main>
     </>
   )
 }
 
-export default Quiz1
+export default Quiz
