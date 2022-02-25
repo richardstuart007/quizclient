@@ -2,6 +2,8 @@
 //  Libraries
 //
 import { useState, useEffect } from 'react'
+import { valtioStore } from './ValtioStore'
+import { useSnapshot } from 'valtio'
 //
 //  Sub Components
 //
@@ -22,6 +24,7 @@ const { SQL_MAXROWS } = require('../constants.js')
 //
 const log1 = true
 const log2 = true
+const log3 = true
 //
 //  Global fields (g_)
 //
@@ -42,6 +45,7 @@ function Quiz() {
   const [quizRow, setQuizRow] = useState(null)
   const [countPass, setCountPass] = useState(0)
   const [countTotal, setCountTotal] = useState(0)
+  const valtioSnap = useSnapshot(valtioStore)
   //
   // Form Message
   //
@@ -65,12 +69,15 @@ function Quiz() {
       //
       const resultData = await apiRequest(method, URL_QUESTIONS, body)
       //
-      //  Process results
+      //  No data returned
       //
       if (!resultData) {
         setForm_message('Did not receive expected data')
         throw Error('Did not receive expected data')
       }
+      //
+      //  Process results
+      //
       setQuizData(resultData)
       setFetchError(null)
     } catch (err) {
@@ -78,6 +85,53 @@ function Quiz() {
     } finally {
       setIsLoading(false)
     }
+  }
+  //...................................................................................
+  //.  First time data received
+  //...................................................................................
+  const firstLoad = () => {
+    if (log3) console.log('g_firstTime', g_firstTime)
+    g_firstTime = false
+    //
+    //  Number of questions
+    //
+    g_quizNum = quizData.length
+    //
+    // update Store
+    //
+    valtioStore.v_quizData = quizData
+    //
+    //  Check/wait for updates to occur
+    //
+    let count = 0
+    const interval1 = setInterval(function () {
+      count = count + 1
+      if (valtioSnap.v_quizData[0]) {
+        if (log3) {
+          console.log('Interval wait store', count)
+          console.log('v_quizData', valtioSnap.v_quizData[0])
+        }
+        clearInterval(interval1)
+      }
+    }, 1)
+    //
+    // Update State
+    //
+    setQuizRow(quizData[0])
+    //
+    //  Check/wait for updates to occur
+    //
+    count = 0
+    const interval2 = setInterval(function () {
+      count = count + 1
+      if (quizRow) {
+        if (log3) {
+          console.log('Interval wait quizRow', count)
+          console.log('quizRow', quizRow)
+        }
+        clearInterval(interval2)
+      }
+    }, 1)
   }
   //...................................................................................
   //.  Form Submit
@@ -153,21 +207,7 @@ function Quiz() {
   //
   //  Load the first question
   //
-  if (log1) console.log('g_firstTime', g_firstTime)
-  if (g_firstTime) {
-    g_firstTime = false
-    g_quizNum = quizData.length
-    setQuizRow(quizData[0])
-    if (log1) console.log('setQuizRow')
-  }
-  //
-  //  Populate data message if no data yet
-  //
-  if (!quizRow) {
-    dataStatus = 'Loading first time await state update ...'
-    if (log2) console.log('dataStatus ', dataStatus)
-    return <p style={{ color: 'red' }}>{dataStatus}</p>
-  }
+  if (g_firstTime) firstLoad()
   //
   //  Title
   //

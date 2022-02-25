@@ -2,8 +2,6 @@
 //  Libraries
 //
 import { useState, useEffect } from 'react'
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
 //
 //  Sub Components
 //
@@ -15,17 +13,22 @@ import apiRequest from '../apiRequest'
 //
 // Constants
 //
-const { URL_QUESTIONS } = require('../constants.js')
 const sqlClient = 'Quiz/Quiz'
-const sqlTable = 'questions'
-const maxRows = 200
-const log = true
+const { URL_QUESTIONS } = require('../constants.js')
+const { SQL_TABLE } = require('../constants.js')
+const { SQL_MAXROWS } = require('../constants.js')
 //
-//  Global fields
+//  Debug logging
+//
+const log1 = true
+const log2 = true
+//
+//  Global fields (g_)
 //
 let g_row = 0
 let g_quizNum = 0
 let g_firstTime = true
+let g_history = []
 //===================================================================================
 //=  This Component
 //===================================================================================
@@ -43,15 +46,6 @@ function Quiz() {
   // Form Message
   //
   const [form_message, setForm_message] = useState('')
-  //
-  //  Formik
-  //
-  const initialValues = {
-    radioOption: ''
-  }
-  const validationSchema = Yup.object({
-    radioOption: Yup.string()
-  })
   //--------------------------------------------------------------------
   //.  fetch data
   //--------------------------------------------------------------------
@@ -64,7 +58,7 @@ function Quiz() {
       const body = {
         sqlClient: sqlClient,
         sqlAction: 'SELECTSQL',
-        sqlString: `* from ${sqlTable} order by qid OFFSET 0 ROWS FETCH NEXT ${maxRows} ROWS ONLY`
+        sqlString: `* from ${SQL_TABLE} order by qid OFFSET 0 ROWS FETCH NEXT ${SQL_MAXROWS} ROWS ONLY`
       }
       //
       //  SQL database
@@ -92,40 +86,38 @@ function Quiz() {
     //
     //  Check form
     //
-    if (log) console.log('Form data', id)
+    if (log2) console.log('Form data', id)
     //
     //  Update counts
     //
     setCountTotal(countTotal + 1)
-    if (id === 1) setCountPass(countPass + 1)
-    //
-    //  End of data/ Next row
-    //
-    if (g_row + 1 >= g_quizNum) {
-      alert('end of data')
+    if (id === 1) {
+      setForm_message('Well done, previous answer correct')
+      setCountPass(countPass + 1)
     } else {
+      setForm_message('')
+    }
+    //
+    //   Write History
+    //
+    g_history[g_row] = id
+    //
+    //  Next row
+    //
+    if (g_row + 1 < g_quizNum) {
       g_row = g_row + 1
       setQuizRow(quizData[g_row])
     }
-  }
-  //...................................................................................
-  //. Data Received
-  //...................................................................................
-  const DataReceived = () => {
-    try {
-      //
-      //  Numer of rows
-      //
-      g_quizNum = quizData.length
-    } catch (err) {
-      setFetchError(err.message)
-    } finally {
-      setIsLoading(false)
+    //
+    //  End of data
+    //
+    else {
+      alert('end of data')
     }
   }
-  //
-  //  Select an answer
-  //
+  //...................................................................................
+  //. Answer Selected
+  //...................................................................................
   const handleSelect = id => {
     console.log(`ID selected ${id}`)
     onSubmitForm(id)
@@ -137,81 +129,79 @@ function Quiz() {
   //  Initial fetch of data
   //
   useEffect(() => {
+    g_firstTime = true
     fetchItems()
   }, [])
   //
   //  Populate data message if no data
   //
-  let dataError
+  let dataStatus
   isLoading
-    ? (dataError = 'Loading ...')
+    ? (dataStatus = 'Loading ...')
     : !quizData
-    ? (dataError = 'Quiz question empty ...')
+    ? (dataStatus = 'Quiz question empty ...')
     : fetchError
-    ? (dataError = `Error: ${fetchError}`)
-    : (dataError = null)
+    ? (dataStatus = `Error: ${fetchError}`)
+    : (dataStatus = null)
   //
-  //  No data, return
+  //  Status error return
   //
-  if (dataError) {
-    if (log) console.log('dataError ', dataError)
-    return <p style={{ color: 'red' }}>{dataError}</p>
+  if (dataStatus) {
+    if (log2) console.log('dataStatus ', dataStatus)
+    return <p style={{ color: 'red' }}>{dataStatus}</p>
   }
   //
-  //  Get the data first time
+  //  Load the first question
   //
+  if (log1) console.log('g_firstTime', g_firstTime)
   if (g_firstTime) {
     g_firstTime = false
-    DataReceived()
-    setQuizRow(quizData[g_row])
+    g_quizNum = quizData.length
+    setQuizRow(quizData[0])
+    if (log1) console.log('setQuizRow')
   }
   //
   //  Populate data message if no data yet
   //
   if (!quizRow) {
-    dataError = 'Loading ...'
-    if (log) console.log('dataError ', dataError)
-    return <p style={{ color: 'red' }}>{dataError}</p>
+    dataStatus = 'Loading first time await state update ...'
+    if (log2) console.log('dataStatus ', dataStatus)
+    return <p style={{ color: 'red' }}>{dataStatus}</p>
   }
   //
   //  Title
   //
-  let title = `Quiz questions ${g_quizNum}`
+  let title = `Quiz: ${g_quizNum} questions `
   if (countTotal > 0) {
-    title += `- Passed ${countPass}/${countTotal}`
+    const passPercentage = Math.ceil((100 * countPass) / countTotal)
+    title += `:   running score ${countPass}/${countTotal} = ${passPercentage}%`
   }
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <>
-      <Formik initialValues={initialValues} validationSchema={validationSchema}>
-        {formik => (
-          <Form>
-            <main className=''>
-              {/*.................................................................................................*/}
-              {/*  Form Title */}
-              {/*.................................................................................................*/}
-              <legend className='py-2'>
-                <h1 className='text-3xl '>{title} </h1>
-              </legend>
+      <main className=''>
+        {/*.................................................................................................*/}
+        {/*  Form Title */}
+        {/*.................................................................................................*/}
+        <legend className='py-2'>
+          <h1 className='text-3xl '>{title} </h1>
+        </legend>
 
-              {/*.................................................................................................*/}
-              {/*  Quiz panel */}
-              {/*.................................................................................................*/}
-              <QuizPanel row={quizRow} handleSelect={handleSelect} />
-              {/*.................................................................................................*/}
-              {/*  Message */}
-              {/*.................................................................................................*/}
-              <div className=''>
-                <label className='message' htmlFor='text'>
-                  {form_message}
-                </label>
-              </div>
-            </main>
-          </Form>
-        )}
-      </Formik>
+        {/*.................................................................................................*/}
+        {/*  Quiz panel */}
+        {/*.................................................................................................*/}
+        <QuizPanel row={quizRow} handleSelect={handleSelect} />
+        {/*.................................................................................................*/}
+        {/*  Message */}
+        {/*.................................................................................................*/}
+        <div className=''>
+          <label className='message' htmlFor='text'>
+            {form_message}
+          </label>
+        </div>
+      </main>
     </>
   )
 }

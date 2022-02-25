@@ -1,10 +1,8 @@
-import React from "react"
-import Quiz2 from '../Quiz/Quiz2'
+import React from 'react'
+import QuizControl from '../Quiz/QuizControl'
 
 const TestRoute2 = () => {
-  return <Quiz2 />
+  return <QuizControl />
 }
 
 export default TestRoute2
-
-
