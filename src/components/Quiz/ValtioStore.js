@@ -1,8 +1,8 @@
 import { proxy } from 'valtio'
 
-const valtioStore = proxy({
+const ValtioStore = proxy({
   v_quizData: [],
   v_history: []
 })
 
-export { valtioStore }
+export { ValtioStore }

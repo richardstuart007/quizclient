@@ -15,24 +15,32 @@ function QuizControl() {
   //
   //  Define the State variables
   //
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(null)
   //
   //  Load the Store
   //
-  if (step === 0) {
-    QuizGetData()
-    setStep(1)
+  if (step === null) {
+    console.log('QuizGetData')
+    const data = QuizGetData().then(() => {
+      console.log('data returned')
+      console.log(data)
+      setStep(1)
+    })
   }
   //
   //  Present the selected component
   //
   switch (step) {
+    case null:
+      return <p>No data step null</p>
+    case 0:
+      return <p>No data step 0</p>
     case 1:
       return <Quiz step={step} setStep={setStep} />
     case 2:
       return <QuizSummary step={step} setStep={setStep} />
     default:
-      console.log('This is a multi-step form built with React.')
+      console.log(`Step ${step}`)
   }
 }
 

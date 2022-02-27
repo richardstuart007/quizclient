@@ -1,7 +1,7 @@
 //
 //  Libraries
 //
-import { valtioStore } from './ValtioStore'
+import { ValtioStore } from './ValtioStore'
 //
 //  Sub Components
 //
@@ -17,40 +17,54 @@ const { SQL_MAXROWS } = require('../constants.js')
 //  Debug logging
 //
 const log1 = true
-//--------------------------------------------------------------------
-//.  fetch data
-//--------------------------------------------------------------------
-const fetchItems = async () => {
-  try {
-    //
-    //  Setup actions
-    //
-    const method = 'post'
-    const body = {
-      sqlClient: sqlClient,
-      sqlAction: 'SELECTSQL',
-      sqlString: `* from ${SQL_TABLE} order by qid OFFSET 0 ROWS FETCH NEXT ${SQL_MAXROWS} ROWS ONLY`
-    }
-    //
-    //  SQL database
-    //
-    const resultData = await apiRequest(method, URL_QUESTIONS, body)
-    //
-    // update Store
-    //
-    valtioStore.v_quizData = resultData
-  } catch (err) {
-    console.log(err.message)
-  }
-}
 //===================================================================================
 //=  This Component
 //===================================================================================
-function QuizGetData() {
-  //
-  //  Initial fetch of data
-  //
-  fetchItems()
+async function QuizGetData() {
+  //--------------------------------------------------------------------
+  //.  fetch data
+  //--------------------------------------------------------------------
+  const fetchItems = async () => {
+    try {
+      const sqlString = `* from ${SQL_TABLE} order by qid OFFSET 0 ROWS FETCH NEXT ${SQL_MAXROWS} ROWS ONLY`
+      if (log1) console.log(sqlString)
+      //
+      //  Setup actions
+      //
+      const method = 'post'
+      const body = {
+        sqlClient: sqlClient,
+        sqlAction: 'SELECTSQL',
+        sqlString: sqlString
+      }
+      //
+      //  SQL database
+      //
+      const resultData = await apiRequest(method, URL_QUESTIONS, body)
+      if (log1) console.log('data returned ', resultData)
+      //
+      // No data
+      //
+      if (!resultData[0]) {
+        throw Error('No data received')
+      }
+      //
+      // update ValtioStore
+      //
+      if (log1) console.log('update store', resultData)
+      ValtioStore.v_quizData = resultData
+      //
+      // Errors
+      //
+    } catch (err) {
+      console.log(err.message)
+    }
+  }
+  //--------------------------------------------------------------------
+  //-  Initial fetch of data
+  //--------------------------------------------------------------------
+  const resultData = fetchItems()
+  return resultData
 }
 
 export default QuizGetData

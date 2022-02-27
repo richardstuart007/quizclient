@@ -2,7 +2,7 @@
 //  Libraries
 //
 import { useState, useEffect } from 'react'
-import { valtioStore } from './ValtioStore'
+import { ValtioStore } from './ValtioStore'
 import { useSnapshot } from 'valtio'
 //
 //  Sub Components
@@ -45,7 +45,7 @@ function Quiz() {
   const [quizRow, setQuizRow] = useState(null)
   const [countPass, setCountPass] = useState(0)
   const [countTotal, setCountTotal] = useState(0)
-  const valtioSnap = useSnapshot(valtioStore)
+  const valtioSnap = useSnapshot(ValtioStore)
   //
   // Form Message
   //
@@ -99,7 +99,7 @@ function Quiz() {
     //
     // update Store
     //
-    valtioStore.v_quizData = quizData
+    ValtioStore.v_quizData = quizData
     //
     //  Check/wait for updates to occur
     //
