@@ -49,10 +49,10 @@ async function QuizGetData() {
         throw Error('No data received')
       }
       //
-      // update ValtioStore
+      // update ValtioStore - Questions
       //
-      if (log1) console.log('update store', resultData)
-      ValtioStore.v_quizData = resultData
+      if (log1) console.log('update v_Quest', resultData)
+      ValtioStore.v_Quest = resultData
       //
       // Errors
       //
@@ -63,6 +63,16 @@ async function QuizGetData() {
   //--------------------------------------------------------------------
   //-  Initial fetch of data
   //--------------------------------------------------------------------
+  //
+  // Clear the store
+  //
+  if (log1) console.log('clear v_Quest')
+  ValtioStore.v_Quest = []
+  if (log1) console.log('clear v_Ans')
+  ValtioStore.v_Ans = []
+  //
+  // Load the store
+  //
   const resultData = fetchItems()
   return resultData
 }
