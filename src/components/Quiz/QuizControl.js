@@ -8,7 +8,7 @@ import { useSnapshot } from 'valtio'
 //  Sub Components
 //
 import QuizGetData from './QuizGetData'
-import Quiz from './Quiz2'
+import Quiz from './Quiz'
 import QuizSummary from './QuizSummary'
 //
 //  Debug logging

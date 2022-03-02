@@ -12,7 +12,7 @@ import TestRoute2 from './components/TestRoute2/TestRoute2'
 import TestRoute3 from './components/TestRoute3/TestRoute3'
 import Register from './components/Register/Register'
 import DataEntry from './components/DataEntry/DataEntry'
-import Quiz from './components/Quiz/Quiz'
+import QuizControl from './components/Quiz/QuizControl'
 import CreateElement from './components/MaterialUI/pages/CreateElement'
 import NotesElement from './components/MaterialUI/pages/NotesElement'
 //
@@ -59,7 +59,7 @@ function App() {
               <Layout>
                 <div className='content'>
                   <Routes>
-                    <Route path='/Quiz' element={<Quiz />} />
+                    <Route path='/Quiz' element={<QuizControl />} />
                     <Route path='/TestRoute1' element={<TestRoute1 />} />
                     <Route path='/TestRoute2' element={<TestRoute2 />} />
                     <Route path='/TestRoute3' element={<TestRoute3 />} />

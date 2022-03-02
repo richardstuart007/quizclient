@@ -4,11 +4,13 @@
 import { useState } from 'react'
 import { ValtioStore } from './ValtioStore'
 import { useSnapshot } from 'valtio'
-import { Button } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 //
 //  Sub Components
 //
+import QuizHeader from './QuizHeader'
 import QuizSummaryCard from './QuizSummaryCard'
+import QuizHyperlinks from './QuizHyperlinks'
 //.............................................................................
 //.  Initialisation
 //.............................................................................
@@ -160,39 +162,21 @@ const QuizSummary = ({ setStep }) => {
   //  Deconstruct row
   //
   if (g_log1) console.log('quizRow ', quizRow)
-  const {
-    qid,
-    qtitle,
-    qdetail,
-    qanswer_correct,
-    qanswer_bad1,
-    qanswer_bad2,
-    qanswer_bad3,
-    qhyperlink1,
-    qhyperlink2
-  } = quizRow
+  const { qanswer_correct, qanswer_bad1, qanswer_bad2, qanswer_bad3 } = quizRow
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <div>
-      <p> Quiz summary</p>
-      <div className='MainPanel'>
-        <p>{qid} </p>
-        <p>{qtitle} </p>
-        <p>{qdetail} </p>
-        <br></br>
-        <br></br>
-      </div>
-      <h1>Correct Answer</h1>
+      <Typography variant='h5'>Quiz summary</Typography>
+      <QuizHeader quizRow={quizRow} />
+      <Typography variant='h5'>Correct Answer</Typography>
       <QuizSummaryCard key={1} field={qanswer_correct} color='textSecondary' />
-      <h1>Bad Answers - your answer in red</h1>
+      <Typography variant='h5'>Bad Answers - your answer in red</Typography>
       <QuizSummaryCard key={2} field={qanswer_bad1} color='error' />
       <QuizSummaryCard key={3} field={qanswer_bad2} color='textSecondary' />
       <QuizSummaryCard key={4} field={qanswer_bad3} color='textSecondary' />
-      <h1>Hyperlinks</h1>
-      <QuizSummaryCard key={5} field={qhyperlink1} color='textSecondary' />
-      <QuizSummaryCard key={6} field={qhyperlink2} color='textSecondary' />
+      <QuizHyperlinks quizRow={quizRow} />
 
       <Button
         onClick={() => handlePrevious()}

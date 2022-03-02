@@ -4,6 +4,7 @@
 import { useState } from 'react'
 import { ValtioStore } from './ValtioStore'
 import { useSnapshot } from 'valtio'
+import { Typography } from '@material-ui/core'
 //
 //  Sub Components
 //
@@ -169,26 +170,10 @@ const Quiz = ({ setStep }) => {
   return (
     <>
       <main className=''>
-        {/*.................................................................................................*/}
-        {/*  Form Title */}
-        {/*.................................................................................................*/}
-        <legend className='py-2'>
-          <h1 className='text-3xl '>{title} </h1>
-          <h3 className=' '>{score} </h3>
-        </legend>
-
-        {/*.................................................................................................*/}
-        {/*  Quiz panel */}
-        {/*.................................................................................................*/}
-        <QuizPanel row={quizRow} handleSelect={handleSelect} />
-        {/*.................................................................................................*/}
-        {/*  Message */}
-        {/*.................................................................................................*/}
-        <div className=''>
-          <label className='message' htmlFor='text'>
-            {form_message}
-          </label>
-        </div>
+        <Typography variant='h5'>{title}</Typography>
+        <Typography variant='h7'>{score}</Typography>
+        <QuizPanel quizRow={quizRow} handleSelect={handleSelect} />
+        <Typography variant='h7'>{form_message}</Typography>
       </main>
     </>
   )

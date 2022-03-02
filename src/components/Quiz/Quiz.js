@@ -1,180 +1,173 @@
 //
 //  Libraries
 //
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { ValtioStore } from './ValtioStore'
+import { useSnapshot } from 'valtio'
+import { Typography } from '@material-ui/core'
 //
 //  Sub Components
 //
 import QuizPanel from './QuizPanel'
-import apiRequest from '../apiRequest'
+import QuizProgress from './QuizProgress'
 //.............................................................................
 //.  Initialisation
 //.............................................................................
 //
-// Constants
-//
-const sqlClient = 'Quiz/Quiz'
-const { URL_QUESTIONS } = require('../constants.js')
-const { SQL_TABLE } = require('../constants.js')
-const { SQL_MAXROWS } = require('../constants.js')
-//
 //  Debug logging
 //
-const log1 = true
-const log2 = true
+const g_log1 = false
+const g_log2 = false
+const g_log3 = false
+const g_log4 = true
 //
 //  Global fields (g_)
 //
-let g_row = 0
-let g_quizNum = 0
-let g_firstTime = true
-let g_history = []
+let g_Quest = []
+let g_QuestCount = 0
+let g_QuestRow = 0
+
+let g_Ans = []
+let g_AnsCount = 0
+let g_AnsPass = 0
 //===================================================================================
 //=  This Component
 //===================================================================================
-function Quiz() {
+const Quiz = ({ setStep }) => {
   //
   //  Define the State variables
   //
-  const [fetchError, setFetchError] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [quizData, setQuizData] = useState([])
   const [quizRow, setQuizRow] = useState(null)
-  const [countPass, setCountPass] = useState(0)
-  const [countTotal, setCountTotal] = useState(0)
+  const [questCount, setQuestCount] = useState(0)
+  const [ansCount, setAnsCount] = useState(0)
+  //
+  //  Define the ValtioStore
+  //
+  const snapShot = useSnapshot(ValtioStore)
   //
   // Form Message
   //
   const [form_message, setForm_message] = useState('')
-  //--------------------------------------------------------------------
-  //.  fetch data
-  //--------------------------------------------------------------------
-  const fetchItems = async () => {
-    try {
-      //
-      //  Setup actions
-      //
-      const method = 'post'
-      const body = {
-        sqlClient: sqlClient,
-        sqlAction: 'SELECTSQL',
-        sqlString: `* from ${SQL_TABLE} order by qid OFFSET 0 ROWS FETCH NEXT ${SQL_MAXROWS} ROWS ONLY`
+  //...................................................................................
+  //.  First time data received
+  //...................................................................................
+  const firstLoad = () => {
+    //
+    //  Get store data & copy to Global Array (g_Quest)
+    //
+    snapShot.v_Quest.forEach(row => {
+      const rowData = {
+        qanswer_bad1: row.qanswer_bad1,
+        qanswer_bad2: row.qanswer_bad2,
+        qanswer_bad3: row.qanswer_bad2,
+        qanswer_correct: row.qanswer_correct,
+        qdetail: row.qdetail,
+        qgroup1: row.qgroup1,
+        qgroup2: row.qgroup2,
+        qhyperlink1: row.qhyperlink,
+        qhyperlink2: row.qhyperlink2,
+        qid: row.qid,
+        qkey: row.qkey,
+        qowner: row.qowner,
+        qtitle: row.qtitle
       }
-      //
-      //  SQL database
-      //
-      const resultData = await apiRequest(method, URL_QUESTIONS, body)
-      //
-      //  Process results
-      //
-      if (!resultData) {
-        setForm_message('Did not receive expected data')
-        throw Error('Did not receive expected data')
-      }
-      setQuizData(resultData)
-      setFetchError(null)
-    } catch (err) {
-      setFetchError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
+      g_Quest.push(rowData)
+    })
+    //
+    //  Number of questions
+    //
+    g_QuestCount = g_Quest.length
+    setQuestCount(g_QuestCount)
+    //
+    // Update State
+    //
+    setQuizRow(g_Quest[g_QuestRow])
   }
   //...................................................................................
   //.  Form Submit
   //...................................................................................
   const onSubmitForm = id => {
     //
-    //  Check form
+    //  Update count
     //
-    if (log2) console.log('Form data', id)
+    if (id === 1) g_AnsPass = g_AnsPass + 1
     //
-    //  Update counts
+    //   Write Answers
     //
-    setCountTotal(countTotal + 1)
-    if (id === 1) {
-      setForm_message('Well done, previous answer correct')
-      setCountPass(countPass + 1)
-    } else {
-      setForm_message('')
-    }
-    //
-    //   Write History
-    //
-    g_history[g_row] = id
-    //
-    //  Next row
-    //
-    if (g_row + 1 < g_quizNum) {
-      g_row = g_row + 1
-      setQuizRow(quizData[g_row])
-    }
+    g_Ans[g_QuestRow] = id
+    if (g_log4) console.log('g_QuestRow ', g_QuestRow, 'id ', id)
+    ValtioStore.v_Ans[g_QuestRow] = id
+    g_AnsCount = g_AnsCount + 1
+    setAnsCount(g_AnsCount)
+    if (g_log2) console.log('g_AnsCount ', g_AnsCount)
     //
     //  End of data
     //
-    else {
-      alert('end of data')
+    if (g_QuestRow + 1 >= g_QuestCount) {
+      if (g_log3) console.log('v_Ans', snapShot.v_Ans)
+      setStep(2)
+      return
     }
+    //
+    //  Next row
+    //
+    g_QuestRow = g_QuestRow + 1
+    setQuizRow(g_Quest[g_QuestRow])
+    if (g_log2) console.log('g_QuestRow data', g_QuestRow, g_Quest[g_QuestRow])
   }
   //...................................................................................
   //. Answer Selected
   //...................................................................................
   const handleSelect = id => {
-    console.log(`ID selected ${id}`)
+    if (g_log2) console.log(`ID selected ${id}`)
+    if (g_log2) console.log('g_QuestRow ', g_QuestRow, 'qid ', quizRow.qid)
     onSubmitForm(id)
   }
   //...................................................................................
   //.  Main Line
   //...................................................................................
+  if (g_log4) console.log('start g_QuestRow', g_QuestRow)
+  if (g_log4)
+    console.log(snapShot.v_Reset0, snapShot.v_Reset1, snapShot.v_Reset2)
   //
-  //  Initial fetch of data
+  //  Initialise global variables
   //
-  useEffect(() => {
-    g_firstTime = true
-    fetchItems()
-  }, [])
-  //
-  //  Populate data message if no data
-  //
-  let dataStatus
-  isLoading
-    ? (dataStatus = 'Loading ...')
-    : !quizData
-    ? (dataStatus = 'Quiz question empty ...')
-    : fetchError
-    ? (dataStatus = `Error: ${fetchError}`)
-    : (dataStatus = null)
-  //
-  //  Status error return
-  //
-  if (dataStatus) {
-    if (log2) console.log('dataStatus ', dataStatus)
-    return <p style={{ color: 'red' }}>{dataStatus}</p>
+  if (snapShot.v_Reset1) {
+    if (g_log4) console.log('Initialise global variables')
+    g_Quest = []
+    g_QuestCount = 0
+    g_QuestRow = 0
+    g_Ans = []
+    g_AnsCount = 0
+    g_AnsPass = 0
   }
   //
-  //  Load the first question
+  //  Load the data array from the store
   //
-  if (log1) console.log('g_firstTime', g_firstTime)
-  if (g_firstTime) {
-    g_firstTime = false
-    g_quizNum = quizData.length
-    setQuizRow(quizData[0])
-    if (log1) console.log('setQuizRow')
+  if (snapShot.v_Reset1) firstLoad()
+  ValtioStore.v_Reset1 = false
+  //
+  //  No data
+  //
+  if (g_QuestCount === 0) {
+    if (g_log1) console.log('No data')
+    return <p style={{ color: 'red' }}>No data</p>
   }
-  //
-  //  Populate data message if no data yet
-  //
   if (!quizRow) {
-    dataStatus = 'Loading first time await state update ...'
-    if (log2) console.log('dataStatus ', dataStatus)
-    return <p style={{ color: 'red' }}>{dataStatus}</p>
+    if (g_log1) console.log('Quiz Row empty')
+    return <p style={{ color: 'red' }}>Quiz Row empty</p>
   }
   //
   //  Title
   //
-  let title = `Quiz: ${g_quizNum} questions `
-  if (countTotal > 0) {
-    const passPercentage = Math.ceil((100 * countPass) / countTotal)
-    title += `:   running score ${countPass}/${countTotal} = ${passPercentage}%`
+  let title = `Quiz: ${g_QuestRow + 1} of ${g_QuestCount} questions `
+  //
+  //  Score
+  //
+  let score = ''
+  if (g_AnsCount > 0) {
+    const passPercentage = Math.ceil((100 * g_AnsPass) / g_AnsCount)
+    score = `Score so far ${g_AnsPass}/${g_AnsCount} = ${passPercentage}%`
   }
   //...................................................................................
   //.  Render the form
@@ -182,25 +175,12 @@ function Quiz() {
   return (
     <>
       <main className=''>
-        {/*.................................................................................................*/}
-        {/*  Form Title */}
-        {/*.................................................................................................*/}
-        <legend className='py-2'>
-          <h1 className='text-3xl '>{title} </h1>
-        </legend>
-
-        {/*.................................................................................................*/}
-        {/*  Quiz panel */}
-        {/*.................................................................................................*/}
-        <QuizPanel row={quizRow} handleSelect={handleSelect} />
-        {/*.................................................................................................*/}
-        {/*  Message */}
-        {/*.................................................................................................*/}
-        <div className=''>
-          <label className='message' htmlFor='text'>
-            {form_message}
-          </label>
-        </div>
+        <Typography variant='h5'>{title}</Typography>
+        {/* <QuizProgress ansCount={ansCount} questCount={questCount} /> */}
+        <QuizProgress />
+        <Typography variant='h7'>{score}</Typography>
+        <QuizPanel quizRow={quizRow} handleSelect={handleSelect} />
+        <Typography variant='h7'>{form_message}</Typography>
       </main>
     </>
   )

@@ -2,10 +2,12 @@
 //  Libraries
 //
 import React from 'react'
+import { Typography } from '@material-ui/core'
 //
 //  Sub Components
 //
 import QuizCard from './QuizCard'
+import QuizHeader from './QuizHeader'
 //..............................................................................
 //.  Initialisation
 //.............................................................................
@@ -16,20 +18,12 @@ const log = false
 //===================================================================================
 //=  This Component
 //===================================================================================
-const QuizPanel = ({ row, handleSelect }) => {
+const QuizPanel = ({ quizRow, handleSelect }) => {
   //
   //  Deconstruct row
   //
-  if (log) console.log('row ', row)
-  const {
-    qid,
-    qtitle,
-    qdetail,
-    qanswer_correct,
-    qanswer_bad1,
-    qanswer_bad2,
-    qanswer_bad3
-  } = row
+  if (log) console.log('quizRow ', quizRow)
+  const { qanswer_correct, qanswer_bad1, qanswer_bad2, qanswer_bad3 } = quizRow
   //
   //  Answers array
   //
@@ -63,13 +57,9 @@ const QuizPanel = ({ row, handleSelect }) => {
   //
   return (
     <>
-      <div className='MainPanel'>
-        <p>{qid} </p>
-        <p>{qtitle} </p>
-        <p>{qdetail} </p>
-        <br></br>
-        <h2>Click on an answer to select</h2> <br></br>
-      </div>
+      <QuizHeader quizRow={quizRow} />
+      <Typography variant='h5'>Click on an answer to select</Typography>
+
       {Answers.map(answer => (
         <QuizCard key={answer.id} answer={answer} handleSelect={handleSelect} />
       ))}
