@@ -3,6 +3,7 @@
 //
 import React from 'react'
 import { Typography } from '@material-ui/core'
+import { teal } from 'material-ui-colors'
 //
 //  Sub Components
 //
@@ -58,10 +59,13 @@ const QuizPanel = ({ quizRow, handleSelect }) => {
   return (
     <>
       <QuizHeader quizRow={quizRow} />
-      <Typography variant='h5'>Click on an answer to select</Typography>
+
+      <Typography variant='h7' gutterBottom style={{ color: teal[500] }}>
+        Click on an answer to select
+      </Typography>
 
       {Answers.map(answer => (
-        <QuizCard key={answer.id} answer={answer} handleSelect={handleSelect} />
+        <QuizCard answer={answer} handleSelect={handleSelect} />
       ))}
     </>
   )

@@ -27,8 +27,12 @@ const QuizHyperlinks = ({ quizRow }) => {
   return (
     <div>
       <Typography variant='h5'>Hyperlinks</Typography>
-      <QuizSummaryCard key={5} field={qhyperlink1} color='textSecondary' />
-      <QuizSummaryCard key={6} field={qhyperlink2} color='textSecondary' />
+      {qhyperlink1 && (
+        <QuizSummaryCard field={qhyperlink1} color='textSecondary' />
+      )}
+      {qhyperlink2 && (
+        <QuizSummaryCard field={qhyperlink2} color='textSecondary' />
+      )}
     </div>
   )
 }

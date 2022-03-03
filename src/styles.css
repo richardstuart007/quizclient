@@ -212,3 +212,13 @@ textarea {
 .block {
   display: block;
 }
+
+.inline {
+  display: inline;
+}
+
+.container {
+  display: flex;
+  align-items: left;
+  justify-content: left;
+}

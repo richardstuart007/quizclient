@@ -1,7 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClientProvider, QueryClient } from 'react-query'
-// import { ReactQueryDevtools } from 'react-query/devtools'
 //
 //  Components
 //
@@ -19,25 +18,24 @@ import NotesElement from './components/MaterialUI/pages/NotesElement'
 //  Layout
 //
 import { createTheme, ThemeProvider } from '@material-ui/core/styles'
-import { purple } from '@material-ui/core/colors'
 import Layout from './components/Layout/Layout'
 //
 //  Layout Theme
 //
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#fefefe'
-    },
-    secondary: purple
-  },
-  typography: {
-    fontFamily: 'Quicksand',
-    fontWeightLight: 400,
-    fontWeightRegular: 500,
-    fontWeightMedium: 600,
-    fontWeightBold: 700
-  }
+  // palette: {
+  //   primary: {
+  //     main: '#fefefe'
+  //   },
+  //   secondary: purple
+  // },
+  // typography: {
+  //   fontFamily: 'Quicksand',
+  //   fontWeightLight: 400,
+  //   fontWeightRegular: 500,
+  //   fontWeightMedium: 600,
+  //   fontWeightBold: 700
+  // }
 })
 //
 // new instance of client Query
@@ -76,7 +74,6 @@ function App() {
             </ThemeProvider>
           </div>
         </BrowserRouter>
-        {/* <ReactQueryDevtools initialIsOpen={false} position='bottom-right' /> */}
       </QueryClientProvider>
     </>
   )

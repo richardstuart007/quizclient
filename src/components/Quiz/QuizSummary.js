@@ -171,11 +171,11 @@ const QuizSummary = ({ setStep }) => {
       <Typography variant='h5'>Quiz summary</Typography>
       <QuizHeader quizRow={quizRow} />
       <Typography variant='h5'>Correct Answer</Typography>
-      <QuizSummaryCard key={1} field={qanswer_correct} color='textSecondary' />
-      <Typography variant='h5'>Bad Answers - your answer in red</Typography>
-      <QuizSummaryCard key={2} field={qanswer_bad1} color='error' />
-      <QuizSummaryCard key={3} field={qanswer_bad2} color='textSecondary' />
-      <QuizSummaryCard key={4} field={qanswer_bad3} color='textSecondary' />
+      <QuizSummaryCard field={qanswer_correct} color='textSecondary' />
+      <Typography variant='h5'>Your answer in red</Typography>
+      <QuizSummaryCard field={qanswer_bad1} color='error' />
+      <QuizSummaryCard field={qanswer_bad2} color='textSecondary' />
+      <QuizSummaryCard field={qanswer_bad3} color='textSecondary' />
       <QuizHyperlinks quizRow={quizRow} />
 
       <Button

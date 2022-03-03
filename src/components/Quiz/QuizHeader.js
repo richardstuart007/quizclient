@@ -20,18 +20,18 @@ const QuizHeader = ({ quizRow }) => {
   //  Deconstruct row
   //
   if (g_log1) console.log('quizRow ', quizRow)
-  const { qid, qtitle, qdetail } = quizRow
-  //
-  //  Title
-  //
-  const formTitle = `(${qid}): ${qtitle}`
+  const { qtitle, qdetail } = quizRow
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <div>
-      <Typography variant='h5'>{formTitle}</Typography>
-      <Typography variant='h7'>{qdetail}</Typography>
+      <Typography variant='h4' gutterBottom>
+        {qtitle}
+      </Typography>
+      <Typography variant='h6' color='secondary' gutterBottom>
+        {qdetail}
+      </Typography>
     </div>
   )
 }

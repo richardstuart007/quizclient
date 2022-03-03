@@ -157,29 +157,23 @@ const Quiz = ({ setStep }) => {
     if (g_log1) console.log('Quiz Row empty')
     return <p style={{ color: 'red' }}>Quiz Row empty</p>
   }
-  //
-  //  Title
-  //
-  let title = `Quiz: ${g_QuestRow + 1} of ${g_QuestCount} questions `
-  //
-  //  Score
-  //
-  let score = ''
-  if (g_AnsCount > 0) {
-    const passPercentage = Math.ceil((100 * g_AnsPass) / g_AnsCount)
-    score = `Score so far ${g_AnsPass}/${g_AnsCount} = ${passPercentage}%`
-  }
+  // //
+  // //  Score
+  // //
+  // let score = ''
+  // if (g_AnsCount > 0) {
+  //   const passPercentage = Math.ceil((100 * g_AnsPass) / g_AnsCount)
+  //   score = `Score so far ${g_AnsPass}/${g_AnsCount} = ${passPercentage}%`
+  // }
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <>
       <main className=''>
-        <Typography variant='h5'>{title}</Typography>
-        {/* <QuizProgress ansCount={ansCount} questCount={questCount} /> */}
-        <QuizProgress />
-        <Typography variant='h7'>{score}</Typography>
+        {/* <Typography variant='h7'>{score}</Typography> */}
         <QuizPanel quizRow={quizRow} handleSelect={handleSelect} />
+        <QuizProgress ansCount={ansCount} questCount={questCount} />
         <Typography variant='h7'>{form_message}</Typography>
       </main>
     </>
