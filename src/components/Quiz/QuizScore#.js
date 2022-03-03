@@ -2,7 +2,7 @@
 //  Libraries
 //
 import { useState, useEffect } from 'react'
-import { MobileStepper, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 //.............................................................................
 //.  Initialisation
 //.............................................................................
@@ -13,45 +13,43 @@ const g_log1 = true
 //===================================================================================
 //=  This Component
 //===================================================================================
-const QuizProgress = ({ ansCount, questCount }) => {
+const QuizScore = ({ ansPass, ansCount }) => {
+  if (g_log1) console.log('ansPass ', ansPass)
   if (g_log1) console.log('ansCount ', ansCount)
-  if (g_log1) console.log('questCount ', questCount)
   //
   //  State
   //
-  const [activeStep, setActiveStep] = useState(0)
-  const [steps, setSteps] = useState(0)
-  //
-  //  Set steps (one time only)
-  //
-  useEffect(() => {
-    setSteps(questCount)
-  }, [])
+  const [pass, setPass] = useState(0)
+  const [count, setCount] = useState(0)
   //
   //  Set active step
   //
   useEffect(() => {
-    setActiveStep(ansCount)
-  }, [ansCount])
-
+    setPass(ansPass)
+    setCount(ansCount)
+  }, [ansPass, ansCount])
+  //
+  //  No score - return
+  //
+  if (ansCount === 0) return null
+  //
+  //  Score
+  //
+  const passPercentage = Math.ceil((100 * pass) / count)
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <>
-      <Typography variant='h7'>
-        <br></br> <br></br>
-        Progress
+      <Typography variant='h7' gutterBottom>
+        Score: {pass} out of {count}
       </Typography>
-      <MobileStepper
-        variant='progress'
-        steps={steps}
-        position='static'
-        activeStep={activeStep}
-        sx={{ maxWidth: 400, flexGrow: 1 }}
-      />
+      <Typography variant='h7'>
+        <br />
+        {passPercentage}%
+      </Typography>
     </>
   )
 }
 
-export default QuizProgress
+export default QuizScore

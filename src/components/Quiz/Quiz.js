@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core'
 //  Sub Components
 //
 import QuizPanel from './QuizPanel'
-import QuizProgress from './QuizProgress'
+import QuizLinearProgress from './QuizLinearProgress'
 //.............................................................................
 //.  Initialisation
 //.............................................................................
@@ -39,6 +39,7 @@ const Quiz = ({ setStep }) => {
   //
   const [quizRow, setQuizRow] = useState(null)
   const [questCount, setQuestCount] = useState(0)
+  const [ansPass, setAnsPass] = useState(0)
   const [ansCount, setAnsCount] = useState(0)
   //
   //  Define the ValtioStore
@@ -91,6 +92,7 @@ const Quiz = ({ setStep }) => {
     //  Update count
     //
     if (id === 1) g_AnsPass = g_AnsPass + 1
+    setAnsPass(g_AnsPass)
     //
     //   Write Answers
     //
@@ -157,23 +159,23 @@ const Quiz = ({ setStep }) => {
     if (g_log1) console.log('Quiz Row empty')
     return <p style={{ color: 'red' }}>Quiz Row empty</p>
   }
-  // //
-  // //  Score
-  // //
-  // let score = ''
-  // if (g_AnsCount > 0) {
-  //   const passPercentage = Math.ceil((100 * g_AnsPass) / g_AnsCount)
-  //   score = `Score so far ${g_AnsPass}/${g_AnsCount} = ${passPercentage}%`
-  // }
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <>
       <main className=''>
-        {/* <Typography variant='h7'>{score}</Typography> */}
         <QuizPanel quizRow={quizRow} handleSelect={handleSelect} />
-        <QuizProgress ansCount={ansCount} questCount={questCount} />
+        <QuizLinearProgress
+          count={ansCount}
+          total={questCount}
+          text={'Progress'}
+        />
+        <QuizLinearProgress
+          count={ansPass}
+          total={ansCount}
+          text={'Score'}
+        ></QuizLinearProgress>
         <Typography variant='h7'>{form_message}</Typography>
       </main>
     </>
