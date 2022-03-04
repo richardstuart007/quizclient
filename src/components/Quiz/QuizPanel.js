@@ -60,12 +60,12 @@ const QuizPanel = ({ quizRow, handleSelect }) => {
     <>
       <QuizHeader quizRow={quizRow} />
 
-      <Typography variant='h7' gutterBottom style={{ color: teal[500] }}>
+      <Typography variant='h6' gutterBottom style={{ color: teal['A700'] }}>
         Click on an answer to select
       </Typography>
 
-      {Answers.map(answer => (
-        <QuizCard answer={answer} handleSelect={handleSelect} />
+      {Answers.map((answer, key) => (
+        <QuizCard key={key} answer={answer} handleSelect={handleSelect} />
       ))}
     </>
   )

@@ -43,7 +43,7 @@ const QuizLinearProgress = props => {
         <Box sx={{ minWidth: 35 }}>
           <Typography
             variant='body2'
-            color='text.secondary'
+            color='textSecondary'
           >{`${progress}%`}</Typography>
         </Box>
       </Box>

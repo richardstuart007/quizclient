@@ -10,6 +10,7 @@ import { Typography } from '@material-ui/core'
 //
 import QuizPanel from './QuizPanel'
 import QuizLinearProgress from './QuizLinearProgress'
+import QuizHyperlinks from './QuizHyperlinks'
 //.............................................................................
 //.  Initialisation
 //.............................................................................
@@ -65,13 +66,14 @@ const Quiz = ({ setStep }) => {
         qdetail: row.qdetail,
         qgroup1: row.qgroup1,
         qgroup2: row.qgroup2,
-        qhyperlink1: row.qhyperlink,
+        qhyperlink1: row.qhyperlink1,
         qhyperlink2: row.qhyperlink2,
         qid: row.qid,
         qkey: row.qkey,
         qowner: row.qowner,
         qtitle: row.qtitle
       }
+      if (g_log4) console.log(rowData)
       g_Quest.push(rowData)
     })
     //
@@ -159,13 +161,19 @@ const Quiz = ({ setStep }) => {
     if (g_log1) console.log('Quiz Row empty')
     return <p style={{ color: 'red' }}>Quiz Row empty</p>
   }
+  if (g_log4) console.log('quiz row ', quizRow)
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <>
       <main className=''>
-        <QuizPanel quizRow={quizRow} handleSelect={handleSelect} />
+        <QuizPanel
+          key={quizRow.qid}
+          quizRow={quizRow}
+          handleSelect={handleSelect}
+        />
+        <QuizHyperlinks quizRow={quizRow} />
         <QuizLinearProgress
           count={ansCount}
           total={questCount}
@@ -176,7 +184,7 @@ const Quiz = ({ setStep }) => {
           total={ansCount}
           text={'Score'}
         ></QuizLinearProgress>
-        <Typography variant='h7'>{form_message}</Typography>
+        <Typography variant='h6'>{form_message}</Typography>
       </main>
     </>
   )

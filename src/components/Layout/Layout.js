@@ -126,11 +126,11 @@ export default function Layout({ children }) {
         color='primary'
       >
         <Toolbar>
+          <Avatar className={classes.avatar} src='./cards.svg' />
+          <Typography> BRIDGE QUIZ</Typography>
           <Typography className={classes.date}>
             Today is the {format(new Date(), 'do MMMM Y')}
           </Typography>
-          <Typography>Mario</Typography>
-          <Avatar className={classes.avatar} src='./mario-av.png' />
         </Toolbar>
       </AppBar>
 

@@ -64,7 +64,7 @@ const QuizSummary = ({ setStep }) => {
         qdetail: row.qdetail,
         qgroup1: row.qgroup1,
         qgroup2: row.qgroup2,
-        qhyperlink1: row.qhyperlink,
+        qhyperlink1: row.qhyperlink1,
         qhyperlink2: row.qhyperlink2,
         qid: row.qid,
         qkey: row.qkey,
@@ -168,16 +168,17 @@ const QuizSummary = ({ setStep }) => {
   //...................................................................................
   return (
     <div>
-      <Typography variant='h5'>Quiz summary</Typography>
+      <Typography variant='h4'>Quiz summary</Typography>
       <QuizHeader quizRow={quizRow} />
-      <Typography variant='h5'>Correct Answer</Typography>
+      <Typography variant='h6'>Correct Answer</Typography>
       <QuizSummaryCard field={qanswer_correct} color='textSecondary' />
-      <Typography variant='h5'>Your answer in red</Typography>
+      <Typography variant='h6'>Your answer in red</Typography>
       <QuizSummaryCard field={qanswer_bad1} color='error' />
       <QuizSummaryCard field={qanswer_bad2} color='textSecondary' />
       <QuizSummaryCard field={qanswer_bad3} color='textSecondary' />
       <QuizHyperlinks quizRow={quizRow} />
-
+      <br />
+      <Typography variant='h6'>Navigation Controls</Typography>
       <Button
         onClick={() => handlePrevious()}
         type='submit'
