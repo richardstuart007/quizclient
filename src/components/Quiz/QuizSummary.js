@@ -24,6 +24,8 @@ const g_log1 = true
 let g_Quest = []
 let g_QuestRow = 0
 let g_Ans = []
+let g_AnsCount = 0
+let g_AnsPass = 0
 //===================================================================================
 //=  This Component
 //===================================================================================
@@ -32,15 +34,17 @@ const QuizSummary = ({ setStep }) => {
   //
   //  Define the State variables
   //
+  const [ansPass, setAnsPass] = useState(0)
+  const [ansCount, setAnsCount] = useState(0)
+  const [progress, setProgress] = useState(0)
+  //
+  //  Define the State variables
+  //
   const [quizRow, setQuizRow] = useState(null)
   //
   //  Define the ValtioStore
   //
   const snapShot = useSnapshot(ValtioStore)
-  //
-  // Form Message
-  //
-  const [form_message, setForm_message] = useState('')
   //...................................................................................
   //.  First time data received
   //...................................................................................
@@ -80,8 +84,16 @@ const QuizSummary = ({ setStep }) => {
     snapShot.v_Ans.forEach(id => {
       if (g_log1) console.log('g_Ans id ', id)
       g_Ans.push(id)
+      if (id === 1) g_AnsPass = g_AnsPass + 1
+      g_AnsCount = g_AnsCount + 1
     })
     if (g_log1) console.log('g_Ans ', g_Ans)
+    //
+    //  Set counts
+    //
+    setAnsCount(g_AnsCount)
+    setAnsPass(g_AnsPass)
+    setProgress(Math.round((100 * g_AnsPass) / g_AnsCount))
     //
     // Start at row 0
     //
@@ -163,22 +175,26 @@ const QuizSummary = ({ setStep }) => {
   //
   if (g_log1) console.log('quizRow ', quizRow)
   const { qanswer_correct, qanswer_bad1, qanswer_bad2, qanswer_bad3 } = quizRow
+
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <div>
-      <Typography variant='h4'>Quiz summary</Typography>
+      <Typography variant='h4'>
+        Mark ({progress}%) {ansPass} out of Total {ansCount}
+      </Typography>
+
       <QuizHeader quizRow={quizRow} />
-      <Typography variant='h6'>Correct Answer</Typography>
+      <Typography variant='subtitle2'>Correct Answer</Typography>
       <QuizSummaryCard field={qanswer_correct} color='textSecondary' />
-      <Typography variant='h6'>Your answer in red</Typography>
+      <Typography variant='subtitle2'>Your answer in red</Typography>
       <QuizSummaryCard field={qanswer_bad1} color='error' />
       <QuizSummaryCard field={qanswer_bad2} color='textSecondary' />
       <QuizSummaryCard field={qanswer_bad3} color='textSecondary' />
       <QuizHyperlinks quizRow={quizRow} />
       <br />
-      <Typography variant='h6'>Navigation Controls</Typography>
+      <Typography variant='subtitle2'>Navigation</Typography>
       <Button
         onClick={() => handlePrevious()}
         type='submit'

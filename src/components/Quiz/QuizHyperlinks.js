@@ -37,7 +37,7 @@ const QuizHyperlinks = ({ quizRow }) => {
   //...................................................................................
   return (
     <div>
-      <Typography variant='h6'>Help Articles</Typography>
+      <Typography variant='subtitle2'>Help Articles</Typography>
       {qhyperlink1 && (
         <Button
           onClick={openTab(qhyperlink1)}

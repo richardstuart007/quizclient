@@ -35,7 +35,8 @@ const QuizLinearProgress = props => {
   //...................................................................................
   return (
     <Box sx={{ width: '100%' }}>
-      {text} <br />
+      <Typography variant='subtitle2'>{text}</Typography>
+
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ width: '100%', mr: 1 }}>
           <LinearProgress variant='determinate' value={progress} />
