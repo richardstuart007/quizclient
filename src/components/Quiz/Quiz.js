@@ -4,10 +4,10 @@
 import { useState } from 'react'
 import { ValtioStore } from './ValtioStore'
 import { useSnapshot } from 'valtio'
-import { Typography } from '@material-ui/core'
 //
 //  Sub Components
 //
+import QuizHeader from './QuizHeader'
 import QuizPanel from './QuizPanel'
 import QuizLinearProgress from './QuizLinearProgress'
 import QuizHyperlinks from './QuizHyperlinks'
@@ -46,10 +46,6 @@ const Quiz = ({ setStep }) => {
   //  Define the ValtioStore
   //
   const snapShot = useSnapshot(ValtioStore)
-  //
-  // Form Message
-  //
-  const [form_message, setForm_message] = useState('')
   //...................................................................................
   //.  First time data received
   //...................................................................................
@@ -93,7 +89,7 @@ const Quiz = ({ setStep }) => {
     //
     //  Update count
     //
-    if (id === 1) g_AnsPass = g_AnsPass + 1
+    if (id === 1) g_AnsPass++
     setAnsPass(g_AnsPass)
     //
     //   Write Answers
@@ -101,7 +97,7 @@ const Quiz = ({ setStep }) => {
     g_Ans[g_QuestRow] = id
     if (g_log4) console.log('g_QuestRow ', g_QuestRow, 'id ', id)
     ValtioStore.v_Ans[g_QuestRow] = id
-    g_AnsCount = g_AnsCount + 1
+    g_AnsCount++
     setAnsCount(g_AnsCount)
     if (g_log2) console.log('g_AnsCount ', g_AnsCount)
     //
@@ -115,7 +111,7 @@ const Quiz = ({ setStep }) => {
     //
     //  Next row
     //
-    g_QuestRow = g_QuestRow + 1
+    g_QuestRow++
     setQuizRow(g_Quest[g_QuestRow])
     if (g_log2) console.log('g_QuestRow data', g_QuestRow, g_Quest[g_QuestRow])
   }
@@ -167,6 +163,7 @@ const Quiz = ({ setStep }) => {
   //...................................................................................
   return (
     <>
+      <QuizHeader quizRow={quizRow} />
       <main className=''>
         <QuizPanel
           key={quizRow.qid}
@@ -184,7 +181,6 @@ const Quiz = ({ setStep }) => {
           total={ansCount}
           text={'Score'}
         ></QuizLinearProgress>
-        <Typography variant='h6'>{form_message}</Typography>
       </main>
     </>
   )

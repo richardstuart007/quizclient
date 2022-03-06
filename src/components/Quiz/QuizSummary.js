@@ -84,8 +84,8 @@ const QuizSummary = ({ setStep }) => {
     snapShot.v_Ans.forEach(id => {
       if (g_log1) console.log('g_Ans id ', id)
       g_Ans.push(id)
-      if (id === 1) g_AnsPass = g_AnsPass + 1
-      g_AnsCount = g_AnsCount + 1
+      if (id === 1) g_AnsPass++
+      g_AnsCount++
     })
     if (g_log1) console.log('g_Ans ', g_Ans)
     //
@@ -108,7 +108,7 @@ const QuizSummary = ({ setStep }) => {
     //  More rows
     //
     if (g_QuestRow + 1 < g_Ans.length) {
-      g_QuestRow = g_QuestRow + 1
+      g_QuestRow++
       setQuizRow(g_Quest[g_QuestRow])
     } else {
       alert('no more data')
@@ -157,7 +157,16 @@ const QuizSummary = ({ setStep }) => {
   //...................................................................................
   if (g_log1)
     console.log(snapShot.v_Reset0, snapShot.v_Reset1, snapShot.v_Reset2)
-
+  //
+  //  Initialise global variables
+  //
+  if (snapShot.v_Reset2) {
+    g_Quest = []
+    g_QuestRow = 0
+    g_Ans = []
+    g_AnsCount = 0
+    g_AnsPass = 0
+  }
   //
   //  Load the data array from the store
   //
@@ -182,7 +191,7 @@ const QuizSummary = ({ setStep }) => {
   return (
     <div>
       <Typography variant='h4'>
-        Mark ({progress}%) {ansPass} out of Total {ansCount}
+        Mark ({progress}%) {ansPass} out of {ansCount}
       </Typography>
 
       <QuizHeader quizRow={quizRow} />

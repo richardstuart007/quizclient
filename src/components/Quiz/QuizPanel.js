@@ -8,7 +8,6 @@ import { teal } from 'material-ui-colors'
 //  Sub Components
 //
 import QuizCard from './QuizCard'
-import QuizHeader from './QuizHeader'
 //..............................................................................
 //.  Initialisation
 //.............................................................................
@@ -16,8 +15,6 @@ import QuizHeader from './QuizHeader'
 // Constants
 //
 const log = false
-//===================================================================================
-//=  This Component
 //===================================================================================
 const QuizPanel = ({ quizRow, handleSelect }) => {
   //
@@ -58,10 +55,12 @@ const QuizPanel = ({ quizRow, handleSelect }) => {
   //
   return (
     <>
-      <QuizHeader quizRow={quizRow} />
-
-      <Typography variant='h6' gutterBottom style={{ color: teal['A700'] }}>
-        Click on an answer to select
+      <Typography
+        variant='subtitle2'
+        gutterBottom
+        style={{ color: teal['A700'] }}
+      >
+        Select your answer by clicking
       </Typography>
 
       {Answers.map((answer, key) => (

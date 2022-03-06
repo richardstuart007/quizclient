@@ -27,7 +27,7 @@ const QuizHeader = ({ quizRow }) => {
   return (
     <div>
       {qtitle && (
-        <Typography variant='h6' gutterBottom>
+        <Typography variant='subtitle1' gutterBottom>
           {qtitle}
         </Typography>
       )}
