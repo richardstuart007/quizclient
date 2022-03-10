@@ -1,7 +1,7 @@
 //
 //  Libraries
 //
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ValtioStore } from './ValtioStore'
 import { useSnapshot } from 'valtio'
 import { Button, Typography } from '@material-ui/core'
@@ -9,7 +9,7 @@ import { Button, Typography } from '@material-ui/core'
 //  Sub Components
 //
 import QuizHeader from './QuizHeader'
-import QuizSummaryCard from './QuizSummaryCard'
+import QuizSummaryPanel from './QuizSummaryPanel'
 import QuizHyperlinks from './QuizHyperlinks'
 //.............................................................................
 //.  Initialisation
@@ -18,16 +18,6 @@ import QuizHyperlinks from './QuizHyperlinks'
 //  Debug logging
 //
 const g_log1 = true
-//
-//  Global fields (g_)
-//
-let g_Quest = []
-let g_QuestRow = 0
-let g_Ans = []
-let g_AnsCount = 0
-let g_AnsPass = 0
-//===================================================================================
-//=  This Component
 //===================================================================================
 const QuizSummary = ({ setStep }) => {
   if (g_log1) console.log('Start')
@@ -36,11 +26,11 @@ const QuizSummary = ({ setStep }) => {
   //
   const [ansPass, setAnsPass] = useState(0)
   const [ansCount, setAnsCount] = useState(0)
-  const [progress, setProgress] = useState(0)
-  //
-  //  Define the State variables
-  //
+  const [mark, setMark] = useState(0)
   const [quizRow, setQuizRow] = useState(null)
+  const [rowIdx, setRowIdx] = useState(0)
+  const [quizQuest, setQuizQuest] = useState([])
+  const [quizAns, setQuizAns] = useState([])
   //
   //  Define the ValtioStore
   //
@@ -53,65 +43,55 @@ const QuizSummary = ({ setStep }) => {
     //  Initialise global variables
     //
     if (g_log1) console.log('Initialise global variables')
-    g_Quest = []
-    g_QuestRow = -1
-    g_Ans = []
     //
     //  Get store data - Questions
     //
+    let quest = []
     snapShot.v_Quest.forEach(row => {
-      const rowData = {
-        qanswer_bad1: row.qanswer_bad1,
-        qanswer_bad2: row.qanswer_bad2,
-        qanswer_bad3: row.qanswer_bad2,
-        qanswer_correct: row.qanswer_correct,
-        qdetail: row.qdetail,
-        qgroup1: row.qgroup1,
-        qgroup2: row.qgroup2,
-        qhyperlink1: row.qhyperlink1,
-        qhyperlink2: row.qhyperlink2,
-        qid: row.qid,
-        qkey: row.qkey,
-        qowner: row.qowner,
-        qtitle: row.qtitle
-      }
-      g_Quest.push(rowData)
+      const rowData = { ...row }
+      quest.push(rowData)
     })
-    if (g_log1) console.log('g_Quest ', g_Quest)
+    if (g_log1) console.log('quest ', quest)
+    setQuizQuest(quest)
     //
     //  Get store data - Answers
     //
+    let Ans = []
+    let AnsPass = 0
     snapShot.v_Ans.forEach(id => {
-      if (g_log1) console.log('g_Ans id ', id)
-      g_Ans.push(id)
-      if (id === 1) g_AnsPass++
-      g_AnsCount++
+      Ans.push(id)
+      if (id === 1) AnsPass++
     })
-    if (g_log1) console.log('g_Ans ', g_Ans)
+    if (g_log1) console.log('Ans ', Ans)
+    const AnsCount = Ans.length
+    setAnsCount(AnsCount)
+    setAnsPass(AnsPass)
+    setQuizAns(Ans)
     //
-    //  Set counts
+    //  Mark%
     //
-    setAnsCount(g_AnsCount)
-    setAnsPass(g_AnsPass)
-    setProgress(Math.round((100 * g_AnsPass) / g_AnsCount))
+    setMark(Math.round((100 * AnsPass) / AnsCount))
     //
     // Start at row 0
     //
-    nextQuestion()
+    if (g_log1) console.log('quest[0] ', quest[0])
+    setRowIdx(0)
+    setQuizRow(quest[0])
   }
   //...................................................................................
   //.  Next Question
   //...................................................................................
   const nextQuestion = () => {
     if (g_log1) console.log('nextQuestion ')
+    console.log(quizQuest)
     //
     //  More rows
     //
-    if (g_QuestRow + 1 < g_Ans.length) {
-      g_QuestRow++
-      setQuizRow(g_Quest[g_QuestRow])
-    } else {
-      alert('no more data')
+    console.log(rowIdx, ansCount)
+    if (rowIdx + 1 < ansCount) {
+      const RowIdx = rowIdx + 1
+      setRowIdx(RowIdx)
+      setQuizRow(quizQuest[RowIdx])
     }
   }
   //...................................................................................
@@ -124,7 +104,6 @@ const QuizSummary = ({ setStep }) => {
     if (g_log1) console.log('handleRestart ')
     ValtioStore.v_Reset0 = true
     ValtioStore.v_Reset1 = true
-    ValtioStore.v_Reset2 = true
     setStep(0)
     return
   }
@@ -136,9 +115,10 @@ const QuizSummary = ({ setStep }) => {
     //
     //  More rows
     //
-    if (g_QuestRow > 0) {
-      g_QuestRow = g_QuestRow - 1
-      setQuizRow(g_Quest[g_QuestRow])
+    if (rowIdx > 0) {
+      const RowIdx = rowIdx - 1
+      setRowIdx(RowIdx)
+      setQuizRow(quizQuest[RowIdx])
     }
   }
   //...................................................................................
@@ -155,23 +135,12 @@ const QuizSummary = ({ setStep }) => {
   //...................................................................................
   //.  Main Line
   //...................................................................................
-  if (g_log1)
-    console.log(snapShot.v_Reset0, snapShot.v_Reset1, snapShot.v_Reset2)
-  //
-  //  Initialise global variables
-  //
-  if (snapShot.v_Reset2) {
-    g_Quest = []
-    g_QuestRow = 0
-    g_Ans = []
-    g_AnsCount = 0
-    g_AnsPass = 0
-  }
   //
   //  Load the data array from the store
   //
-  if (snapShot.v_Reset2) firstLoad()
-  ValtioStore.v_Reset2 = false
+  useEffect(() => {
+    firstLoad()
+  }, [])
   //
   //  No data
   //
@@ -183,56 +152,51 @@ const QuizSummary = ({ setStep }) => {
   //  Deconstruct row
   //
   if (g_log1) console.log('quizRow ', quizRow)
-  const { qanswer_correct, qanswer_bad1, qanswer_bad2, qanswer_bad3 } = quizRow
-
   //...................................................................................
   //.  Render the form
   //...................................................................................
   return (
     <div>
       <Typography variant='h4'>
-        Mark ({progress}%) {ansPass} out of {ansCount}
+        Mark ({mark}%) {ansPass} out of {ansCount}
       </Typography>
 
       <QuizHeader quizRow={quizRow} />
-      <Typography variant='subtitle2'>Correct Answer</Typography>
-      <QuizSummaryCard field={qanswer_correct} color='textSecondary' />
-      <Typography variant='subtitle2'>Your answer in red</Typography>
-      <QuizSummaryCard field={qanswer_bad1} color='error' />
-      <QuizSummaryCard field={qanswer_bad2} color='textSecondary' />
-      <QuizSummaryCard field={qanswer_bad3} color='textSecondary' />
+      <QuizSummaryPanel quizRow={quizRow} quizanswer={quizAns[rowIdx]} />
       <QuizHyperlinks quizRow={quizRow} />
       <br />
       <Typography variant='subtitle2'>Navigation</Typography>
+
       <Button
         onClick={() => handlePrevious()}
         type='submit'
-        color='secondary'
         variant='contained'
+        style={{ backgroundColor: 'yellow' }}
       >
         Previous
       </Button>
+
       <Button
         onClick={() => nextQuestion()}
         type='submit'
-        color='secondary'
         variant='contained'
+        style={{ backgroundColor: 'yellow' }}
       >
         Next
       </Button>
       <Button
         onClick={() => handleRestart()}
         type='submit'
-        color='secondary'
         variant='contained'
+        style={{ backgroundColor: 'yellow' }}
       >
         Restart
       </Button>
       <Button
         onClick={() => handleQuit()}
         type='submit'
-        color='secondary'
         variant='contained'
+        style={{ backgroundColor: 'yellow' }}
       >
         quit
       </Button>

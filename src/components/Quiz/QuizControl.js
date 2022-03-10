@@ -13,7 +13,7 @@ import QuizSummary from './QuizSummary'
 //
 //  Debug logging
 //
-const g_log1 = false
+const g_log1 = true
 const g_log2 = true
 //===================================================================================
 //=  This Component
@@ -27,32 +27,32 @@ function QuizControl() {
   //  Define the ValtioStore
   //
   const snapShot = useSnapshot(ValtioStore)
-  //
-  //  Reset the store
-  //
   if (g_log2)
     console.log('CONTROL step ', step, 'snapShot.v_Reset0  ', snapShot.v_Reset0)
+  //
+  //  Reset or First Time
+  //
   if (step === null || snapShot.v_Reset0) {
+    //
+    // Reset flags & step
+    //
     setStep(0)
     ValtioStore.v_Reset0 = false
-    if (g_log1) console.log('QuizGetData')
-    const data = QuizGetData().then(() => {
-      if (g_log1) console.log('data returned')
-      if (g_log1) console.log(data)
-      ValtioStore.v_Reset1 = true
-      ValtioStore.v_Reset2 = true
+    ValtioStore.v_Reset1 = true
+    //
+    // Get data
+    //
+    QuizGetData().then(() => {
       setStep(1)
     })
   }
-  if (g_log1)
-    console.log(snapShot.v_Reset0, snapShot.v_Reset1, snapShot.v_Reset2)
   //
   //  Present the selected component
   //
-  if (g_log1) console.log('step ', step)
   switch (step) {
     case 0:
-      return <p>No data step 0</p>
+      if (g_log1) console.log(`Step ${step} waiting for data`)
+      return <p>waiting for data</p>
     case 1:
       return <Quiz setStep={setStep} />
     case 2:
@@ -60,7 +60,8 @@ function QuizControl() {
     case 9:
       return <p>Thanks and Goodbye!</p>
     default:
-      console.log(`Step ${step}`)
+      if (g_log1) console.log(`Step ${step} waiting for data`)
+      return <p>waiting for data</p>
   }
 }
 

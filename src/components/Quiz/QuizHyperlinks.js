@@ -42,7 +42,8 @@ const QuizHyperlinks = ({ quizRow }) => {
         <Button
           onClick={openTab(qhyperlink1)}
           type='submit'
-          color='secondary'
+          variant='contained'
+          style={{ color: 'blue' }}
           variant='outlined'
           size='small'
         >
@@ -54,7 +55,7 @@ const QuizHyperlinks = ({ quizRow }) => {
         <Button
           onClick={openTab(qhyperlink2)}
           type='submit'
-          color='secondary'
+          style={{ color: 'blue' }}
           variant='outlined'
           size='small'
         >

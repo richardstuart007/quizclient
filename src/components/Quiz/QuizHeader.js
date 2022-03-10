@@ -32,7 +32,7 @@ const QuizHeader = ({ quizRow }) => {
         </Typography>
       )}
 
-      <Typography variant='h6' color='secondary' gutterBottom>
+      <Typography variant='h6' style={{ color: 'blue' }} gutterBottom>
         {qdetail}
       </Typography>
     </div>
