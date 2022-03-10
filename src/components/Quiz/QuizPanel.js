@@ -1,7 +1,6 @@
 //
 //  Libraries
 //
-import React from 'react'
 import { Typography } from '@material-ui/core'
 import { teal } from 'material-ui-colors'
 //

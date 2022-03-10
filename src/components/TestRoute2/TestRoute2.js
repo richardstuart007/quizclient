@@ -1,4 +1,3 @@
-import React from 'react'
 import QuizControl from '../Quiz/QuizControl'
 
 const TestRoute2 = () => {

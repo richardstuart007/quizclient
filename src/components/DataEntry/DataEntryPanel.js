@@ -1,8 +1,4 @@
 //
-//  Libraries
-//
-import React from 'react'
-//
 //  Sub Components
 //
 import DataEntryElement from './DataEntryElement'

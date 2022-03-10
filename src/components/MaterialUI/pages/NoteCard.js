@@ -1,4 +1,3 @@
-import React from 'react'
 import DeleteOutlined from '@material-ui/icons/DeleteOutlined'
 import {
   makeStyles,

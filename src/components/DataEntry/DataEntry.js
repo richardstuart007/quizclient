@@ -1,7 +1,7 @@
 //
 //  Libraries
 //
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 //
@@ -18,8 +18,8 @@ import DataEntryPanel from './DataEntryPanel'
 const { URL_QUESTIONS } = require('../constants.js')
 const sqlClient = 'Quiz/DataEntry'
 const sqlTable = 'questions'
-const log2 = false
-
+const g_log1 = true
+const g_log2 = false
 //.............................................................................
 //.  Data Input Fields
 //.............................................................................
@@ -256,8 +256,8 @@ function DataEntry() {
       enableReinitialize
     >
       {formik => {
-        if (log2) console.log('Formik props', formik)
-        if (log2) console.log(`Formik is valid ${formik.isValid}`)
+        if (g_log2) console.log('Formik props', formik)
+        if (g_log2) console.log(`Formik is valid ${formik.isValid}`)
         return (
           <Form>
             <main className=''>

@@ -1,6 +1,5 @@
-import React from "react"
-import { Field, ErrorMessage } from "formik"
-import TextError from "./TextError"
+import { Field, ErrorMessage } from 'formik'
+import TextError from './TextError'
 
 function RadioButtons(props) {
   const { label, name, options, ...rest } = props
