@@ -27,7 +27,7 @@ const g_log2 = false
 //  Initial Values
 //
 const initialValues = {
-  qowner: 'richard',
+  qowner: 'public',
   qkey: '',
   qtitle: '',
   qdetail: '',
@@ -79,17 +79,11 @@ let rtn_qid = 0
 const validationSchema = Yup.object({
   qowner: Yup.string().required('Required'),
   qkey: Yup.string().required('Required'),
-  // qtitle: Yup.string().required("Required"),
   qdetail: Yup.string().required('Required'),
   qanswer_correct: Yup.string().required('Required'),
-  qanswer_bad1: Yup.string().required('Required')
-  // qanswer_bad2: Yup.string().required("Required"),
-  // qanswer_bad3: Yup.string().required("Required"),
-  // qgroup1: Yup.string().required("Required"),
-  // qgroup2: Yup.string().required("Required")
+  qanswer_bad1: Yup.string().required('Required'),
+  qgroup1: Yup.string().required('Required')
 })
-//===================================================================================
-//=  This Component
 //===================================================================================
 function DataEntry() {
   //
