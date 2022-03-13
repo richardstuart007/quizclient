@@ -502,10 +502,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   }
 }
 
-.static{
-  position: static;
-}
-
 .fixed{
   position: fixed;
 }
@@ -591,7 +587,7 @@ body {
   margin: 10px;
 }
 
-button {
+/* button {
   margin-right: 10px;
   margin-top: 10px;
   background-color: pink;
@@ -620,7 +616,7 @@ button,
 [type='reset'],
 [type='submit'] {
   background-color: pink;
-}
+} */
 
 .content {
   text-align: left;
@@ -659,7 +655,7 @@ button,
   box-sizing: border-box;
 }
 
-input[type='text'],
+/* input[type='text'],
 select,
 textarea {
   padding: 2px;
@@ -679,9 +675,9 @@ input[type='submit'] {
 
 input[type='submit']:hover {
   background-color: #45a049;
-}
+} */
 
-.col-10 {
+/* .col-10 {
   float: left;
   width: 10%;
   margin-top: 6px;
@@ -709,7 +705,7 @@ input[type='submit']:hover {
   float: left;
   width: 75%;
   margin-top: 6px;
-}
+} */
 
 /* Clear floats after the columns */
 
@@ -773,7 +769,7 @@ input[type='submit']:hover {
   margin-bottom: 5px;
 }
 
-label {
+/* label {
   font-weight: bold;
   padding: 6px 12px;
 }
@@ -787,7 +783,7 @@ textarea {
   background-image: none;
   border: 1px solid #ccc;
   border-radius: 4px;
-}
+} */
 
 .error {
   padding: 6px 12px;

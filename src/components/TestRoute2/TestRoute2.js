@@ -1,7 +1,5 @@
-import QuizControl from '../Quiz/QuizControl'
-
 const TestRoute2 = () => {
-  return <QuizControl />
+  return <p>Test Route 2</p>
 }
 
 export default TestRoute2

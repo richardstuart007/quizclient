@@ -2,6 +2,15 @@
 //  Libraries
 //
 import { useState } from 'react'
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
+import { Container, Grid, Typography } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+//
+//  Sub Components
+//
+import Controls from '../../components/controls/Controls'
+import Textfield from '../controls/Textfield'
 //..............................................................................
 //.  Initialisation
 //.............................................................................
@@ -9,29 +18,69 @@ import { useState } from 'react'
 // Constants
 //
 const { URL_REGISTER } = require('../constants.js')
-//===================================================================================
-//=  This Component
+const sqlClient = 'Quiz/Register'
+//
+// Debugging
+//
+const g_log1 = true
+//
+//  Styles
+//
+const useStyles = makeStyles(theme => ({
+  formWrapper: {
+    // marginTop: theme.spacing(1),
+    // marginBottom: theme.spacing(1)
+  }
+}))
+//.............................................................................
+//.  Data Input Fields
+//.............................................................................
+//
+//  Initial Values
+//
+const initialValues = {
+  name: '',
+  email: '',
+  password: ''
+}
+//.............................................................................
+//.  Input field validation
+//.............................................................................
+const validationSchema = Yup.object({
+  name: Yup.string().required('Required'),
+  email: Yup.string().email().required('Required'),
+  password: Yup.string().required('Required')
+})
 //===================================================================================
 function Register() {
   //
+  //  Style classes
+  //
+  const classes = useStyles()
+  //
   //  Define the State variables
   //
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
   const [id, setId] = useState('')
   //
   // Form Message
   //
   const [form_message, setForm_message] = useState('')
   //...................................................................................
-  //.  Add to the database
+  //. Form Submit
   //...................................................................................
-  const onSubmitRegister = () => {
+  const onSubmitForm = (values, submitProps) => {
+    //
+    //  Deconstruct values
+    //
+    const { name, email, password } = values
+    //
+    //  Post to server
+    //
     fetch(URL_REGISTER, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        sqlClient: sqlClient,
         email: email,
         password: password,
         name: name
@@ -52,98 +101,62 @@ function Register() {
       })
   }
   //...................................................................................
-  //.  Create the form
+  //.  Render the form
   //...................................................................................
   return (
-    <article className=''>
-      <main className='pa4'>
-        {/*..................................................................................................*/}
-        <div className='measure'>
-          <fieldset id='sign_up' className='MainPanel'>
-            {/*.................................................................................................*/}
-            <legend className=''>
-              Register
-              {id > 0 ? ` (${id})` : null}
-            </legend>
+    <Grid container>
+      <Container>
+        <div className={classes.formWrapper}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={onSubmitForm}
+            enableReinitialize
+          >
+            <Form>
+              <Grid container spacing={2}>
+                {/*.................................................................................................*/}
+                {/*  Form Title */}
+                {/*.................................................................................................*/}
+                <Grid item xs={12}>
+                  <Typography variant='subtitle1' gutterBottom>
+                    Register {id > 0 ? ` (${id})` : null}
+                  </Typography>
+                </Grid>
+                {/*.................................................................................................*/}
+                <Grid item xs={12}>
+                  <Textfield name='name' label='name' />
+                </Grid>
+                <Grid item xs={12}>
+                  <Textfield name='email' label='email' />
+                </Grid>
+                <Grid item xs={12}>
+                  <Textfield name='password' label='password' />
+                </Grid>
 
-            {/*.................................................................................................*/}
-            {/*  Name */}
-            {/*.................................................................................................*/}
-            <div className='mt3'>
-              <label className='' htmlFor='Name'>
-                Name
-              </label>
+                {/*.................................................................................................*/}
+                {/*  Message */}
+                {/*.................................................................................................*/}
+                <Grid item xs={12}>
+                  <Typography style={{ color: 'red' }}>
+                    {form_message}
+                  </Typography>
+                </Grid>
 
-              <input
-                className='pa2 input-reset ba inputdata hover-bg-black hover-white w-100'
-                type='name'
-                name='name'
-                id='name'
-                value={name}
-                onChange={e => setName(e.target.value)}
-              />
-            </div>
-            {/*.................................................................................................*/}
-            {/*  Email */}
-            {/*.................................................................................................*/}
-            <div className='mt3'>
-              <label className='' htmlFor='email-address'>
-                Email
-              </label>
-
-              <input
-                className='pa2 input-reset ba inputdata hover-bg-black hover-white w-100'
-                type='email'
-                name='email'
-                id='email'
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-              />
-            </div>
-            {/*.................................................................................................*/}
-            {/*  Password */}
-            {/*.................................................................................................*/}
-            <div className='mv3'>
-              <label className='db fw6 lh-copy f6' htmlFor='password'>
-                Password
-              </label>
-
-              <input
-                className='pa2 input-reset ba inputdata hover-bg-black hover-white w-100'
-                type='password'
-                name='password'
-                id='password'
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
-            </div>
-          </fieldset>
-
-          {/*.................................................................................................*/}
-          {/*  Register */}
-          {/*.................................................................................................*/}
-          <div className=''>
-            <button
-              onClick={onSubmitRegister}
-              className='b ph3 pv2 input-reset ba bg-transparent grow pointer f6 dib hover-red'
-              type='submit'
-              value='Register'
-            >
-              Register
-            </button>
-          </div>
-          {/*.................................................................................................*/}
-          {/*  Message */}
-          {/*.................................................................................................*/}
-          <div className=''>
-            <label className='message' htmlFor='text'>
-              {form_message}
-            </label>
-          </div>
-          {/*.................................................................................................*/}
+                {/*.................................................................................................*/}
+                <Grid item xs={12}>
+                  <Controls.Qbutton
+                    type='submit'
+                    text='Register'
+                    value='Submit'
+                  />
+                </Grid>
+              </Grid>
+            </Form>
+          </Formik>
         </div>
-      </main>
-    </article>
+      </Container>
+    </Grid>
   )
 }
 

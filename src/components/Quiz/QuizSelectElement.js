@@ -1,28 +1,21 @@
 //
 //  Sub Components
 //
-import { Field, ErrorMessage } from 'formik'
-import TextError from '../Formik/TextError'
+import Textfield from '../controls/Textfield'
+import { Grid } from '@material-ui/core'
+
 //===================================================================================
-const QuizSelectElement = ({ entry_type, entry_label, entry_name }) => {
+const DataSelectElement = ({
+  entry_type,
+  entry_label,
+  entry_name,
+  entry_width
+}) => {
   return (
-    <div className='form-control row'>
-      <label className='col-10 inputlabel' htmlFor={entry_name}>
-        {entry_label}
-      </label>
-
-      <Field
-        className='col-75'
-        type={entry_type}
-        id={entry_name}
-        name={entry_name}
-        component={entry_type}
-        rows='2'
-      />
-
-      <ErrorMessage name={entry_name} component={TextError} />
-    </div>
+    <Grid item xs={entry_width}>
+      <Textfield name={entry_name} label={entry_label} />
+    </Grid>
   )
 }
 
-export default QuizSelectElement
+export default DataSelectElement

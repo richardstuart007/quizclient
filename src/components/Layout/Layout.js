@@ -112,6 +112,11 @@ export default function Layout({ children }) {
       text: 'Register',
       icon: <ViewList color='secondary' />,
       path: '/Register'
+    },
+    {
+      text: 'Signin',
+      icon: <ViewList color='secondary' />,
+      path: '/Signin'
     }
   ]
 

@@ -54,21 +54,58 @@ async function QuizGetData({ qowner, qgroup1, qgroup2 }) {
         throw Error('No data received')
       }
       //
+      //  Randomly sort questions
+      //
+      const sortedData = randomSort(resultData)
+      if (g_log1) console.log(sortedData)
+      //
       // update ValtioStore - Questions
       //
-      if (g_log1) console.log('update v_Quest', resultData)
-      ValtioStore.v_Quest = resultData
+      if (g_log1) console.log('update v_Quest', sortedData)
+      ValtioStore.v_Quest = sortedData
       //
       // Return data
       //
-      if (g_log1) console.log('return data 1', resultData)
-      return resultData
+      if (g_log1) console.log('return data 1', sortedData)
+      return sortedData
       //
       // Errors
       //
     } catch (err) {
       console.log(err.message)
     }
+  }
+  //--------------------------------------------------------------------
+  //-  RandomSort
+  //--------------------------------------------------------------------
+  const randomSort = resultData => {
+    //
+    //  Load the workArray
+    //
+    let workArray = []
+    resultData.forEach(data => {
+      const ansObj = {
+        random: Math.random(),
+        details: data
+      }
+      workArray.push(ansObj)
+    })
+    //
+    //  Sort the workArray
+    //
+    workArray.sort((a, b) => (a.random > b.random ? 1 : -1))
+    if (g_log1) console.log(workArray)
+    //
+    //  Strip out the random element
+    //
+    const sortedArray = workArray.map(data => {
+      return data.details
+    })
+    //
+    //  Return sorted array
+    //
+    if (g_log1) console.log(sortedArray)
+    return sortedArray
   }
   //--------------------------------------------------------------------
   //-  Initial fetch of data

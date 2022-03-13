@@ -10,6 +10,7 @@ import TestRoute1 from './components/TestRoute1/TestRoute1'
 import TestRoute2 from './components/TestRoute2/TestRoute2'
 import TestRoute3 from './components/TestRoute3/TestRoute3'
 import Register from './components/Register/Register'
+import Signin from './components/Register/Signin'
 import DataEntry from './components/DataEntry/DataEntry'
 import QuizControl from './components/Quiz/QuizControl'
 import CreateElement from './components/MaterialUI/pages/CreateElement'
@@ -22,21 +23,7 @@ import Layout from './components/Layout/Layout'
 //
 //  Layout Theme
 //
-const theme = createTheme({
-  // palette: {
-  //   primary: {
-  //     main: '#fefefe'
-  //   },
-  //   secondary: purple
-  // },
-  // typography: {
-  //   fontFamily: 'Quicksand',
-  //   fontWeightLight: 400,
-  //   fontWeightRegular: 500,
-  //   fontWeightMedium: 600,
-  //   fontWeightBold: 700
-  // }
-})
+const theme = createTheme({})
 //
 // new instance of client Query
 //
@@ -64,6 +51,7 @@ function App() {
                     <Route path='/QuestionList' element={<QuestionList />} />
                     <Route path='/Mtable' element={<Mtable />} />
                     <Route path='/Register' element={<Register />} />
+                    <Route path='/Signin' element={<Signin />} />
                     <Route path='/DataEntry' element={<DataEntry />} />
                     <Route path='/Notes' element={<NotesElement />} />
                     <Route path='/Create' element={<CreateElement />} />

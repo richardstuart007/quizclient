@@ -1,29 +1,28 @@
 //
 //  Sub Components
 //
-import { Field, ErrorMessage } from 'formik'
-import TextError from '../Formik/TextError'
+import Textfield from '../controls/Textfield'
+import { Grid } from '@material-ui/core'
+
 //===================================================================================
-//=  This Component
-//===================================================================================
-const DataEntryElement = ({ entry_type, entry_label, entry_name }) => {
+const DataEntryElement = ({
+  entry_type,
+  entry_label,
+  entry_name,
+  entry_width
+}) => {
+  let multiline
+  entry_type === 'textarea' ? (multiline = true) : (multiline = false)
   return (
-    <div className='form-control row'>
-      <label className='col-10 inputlabel' htmlFor={entry_name}>
-        {entry_label}
-      </label>
-
-      <Field
-        className='col-75'
-        type={entry_type}
-        id={entry_name}
+    <Grid item xs={entry_width}>
+      <Textfield
         name={entry_name}
-        component={entry_type}
-        rows='2'
+        label={entry_label}
+        multiline={multiline}
+        minRows={2}
+        maxRows={4}
       />
-
-      <ErrorMessage name={entry_name} component={TextError} />
-    </div>
+    </Grid>
   )
 }
 

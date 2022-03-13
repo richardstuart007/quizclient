@@ -4,34 +4,24 @@
 import { useState } from 'react'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-import { Container, Grid, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { Typography } from '@material-ui/core'
 //
 //  Sub Components
 //
 import { DataEntryFields } from './DataEntryFields'
-import DataEntryPanel from './DataEntryPanel'
-import Controls from '../../components/controls/Controls'
+import DataEntryPanel from './saved/DataEntryPanel'
+import Controls from './controls/Controls'
 //..............................................................................
 //.  Initialisation
 //.............................................................................
 //
 // Constants
 //
-const { URL_QUESTIONS } = require('../constants.js')
+const { URL_QUESTIONS } = require('./constants.js')
 const sqlClient = 'Quiz/DataEntry'
 const sqlTable = 'questions'
 const g_log1 = true
 const g_log2 = false
-//
-//  Styles
-//
-const useStyles = makeStyles(theme => ({
-  formWrapper: {
-    // marginTop: theme.spacing(1),
-    // marginBottom: theme.spacing(1)
-  }
-}))
 //.............................................................................
 //.  Data Input Fields
 //.............................................................................
@@ -40,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 //
 const initialValues = {
   qowner: 'public',
-  qkey: 'Test1',
+  qkey: '',
   qtitle: '',
   qdetail: '',
   qhyperlink1: '',
@@ -98,10 +88,6 @@ const validationSchema = Yup.object({
 })
 //===================================================================================
 function DataEntry() {
-  //
-  //  Style classes
-  //
-  const classes = useStyles()
   //
   // Row of data
   //
@@ -259,59 +245,57 @@ function DataEntry() {
   //.  Render the form
   //...................................................................................
   return (
-    <Grid container>
-      <Container>
-        <div className={classes.formWrapper}>
-          <Formik
-            initialValues={formValues}
-            validationSchema={validationSchema}
-            onSubmit={onSubmitForm}
-            enableReinitialize
-          >
-            <Form>
-              <Grid container spacing={2}>
-                {/*.................................................................................................*/}
-                {/*  Form Title */}
-                {/*.................................................................................................*/}
-                <Grid item xs={12}>
-                  <Typography variant='subtitle1' gutterBottom>
-                    Question Data Entry
-                  </Typography>
-                </Grid>
-                {/*.................................................................................................*/}
-
-                <DataEntryPanel EntryFields={DataEntryFields} />
-                {/*.................................................................................................*/}
-                {/*  Message */}
-                {/*.................................................................................................*/}
-                <Grid item xs={12}>
-                  <label className='message' htmlFor='text'>
-                    {form_message}
-                  </label>
-                </Grid>
-
-                {/*.................................................................................................*/}
-                <Grid item xs={12}>
-                  <Controls.Qbutton
-                    text='Load Saved'
-                    onClick={() => setFormValues(savedValues)}
-                  />
-                  <Controls.Qbutton
-                    text='Reset'
-                    onClick={() => setFormValues(initialValues)}
-                  />
-                  <Controls.Qbutton
-                    type='submit'
-                    text='Submit'
-                    value='Submit'
-                  />
-                </Grid>
-              </Grid>
-            </Form>
-          </Formik>
-        </div>
-      </Container>
-    </Grid>
+    <Formik
+      initialValues={formValues}
+      validationSchema={validationSchema}
+      onSubmit={onSubmitForm}
+      enableReinitialize
+    >
+      {formik => {
+        if (g_log2) console.log('Formik props', formik)
+        if (g_log2) console.log(`Formik is valid ${formik.isValid}`)
+        return (
+          <Form>
+            <main className=''>
+              {/*.................................................................................................*/}
+              {/*  Form Title */}
+              {/*.................................................................................................*/}
+              <Typography variant='subtitle1' gutterBottom>
+                Question Data Entry
+              </Typography>
+              {/*.................................................................................................*/}
+              <DataEntryPanel EntryFields={DataEntryFields} />
+              {/*.................................................................................................*/}
+              {/*  Message */}
+              {/*.................................................................................................*/}
+              <div className=''>
+                <label className='message' htmlFor='text'>
+                  {form_message}
+                </label>
+              </div>
+              {/*.................................................................................................*/}
+            </main>
+            {/*.................................................................................................*/}
+            {/*  Buttons */}
+            {/*.................................................................................................*/}
+            <Controls.Qbutton
+              text='Load Saved'
+              onClick={() => setFormValues(savedValues)}
+            />
+            <Controls.Qbutton
+              text='Reset'
+              onClick={() => setFormValues(initialValues)}
+            />
+            <Controls.Qbutton
+              type='submit'
+              text='Submit'
+              value='Submit'
+              disabled={!formik.isValid || formik.isSubmitting}
+            />
+          </Form>
+        )
+      }}
+    </Formik>
   )
 }
 
