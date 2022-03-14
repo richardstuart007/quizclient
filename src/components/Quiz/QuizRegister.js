@@ -10,19 +10,20 @@ import { ValtioStore } from './ValtioStore'
 //
 //  Sub Components
 //
-import { QuizSelectFields } from './QuizSelectFields'
-import QuizSelectPanel from './QuizSelectPanel'
-import QuizGetData from './QuizGetData'
-import MakeQueryablePromise from '../MakeQueryablePromise'
 import Controls from '../../components/controls/Controls'
+import Textfield from '../controls/Textfield'
 //..............................................................................
 //.  Initialisation
 //.............................................................................
 //
 // Constants
 //
+const { URL_REGISTER } = require('../constants.js')
+const sqlClient = 'Quiz/Register'
+//
+// Debugging
+//
 const g_log1 = true
-const g_log2 = false
 //
 //  Styles
 //
@@ -39,78 +40,67 @@ const useStyles = makeStyles(theme => ({
 //  Initial Values
 //
 const initialValues = {
-  qowner: 'public',
-  qgroup1: 'redoubles',
-  qgroup2: ''
-}
-//
-//  Saved Values on Submit
-//
-const savedValues = {
-  qowner: '',
-  qgroup1: '',
-  qgroup2: ''
+  name: '',
+  email: '',
+  password: ''
 }
 //.............................................................................
 //.  Input field validation
 //.............................................................................
 const validationSchema = Yup.object({
-  qowner: Yup.string().required('Required'),
-  qgroup1: Yup.string().required('Required')
+  name: Yup.string().required('Required'),
+  email: Yup.string().email().required('Required'),
+  password: Yup.string().required('Required')
 })
 //===================================================================================
-function QuizSelect() {
+function QuizRegister() {
   //
   //  Style classes
   //
   const classes = useStyles()
   //
+  //  Define the State variables
+  //
+  const [id, setId] = useState('')
+  //
   // Form Message
   //
   const [form_message, setForm_message] = useState('')
   //...................................................................................
-  //.  Form Submit
+  //. Form Submit
   //...................................................................................
   const onSubmitForm = (values, submitProps) => {
     //
-    //  Save data
+    //  Deconstruct values
     //
-    savedValues.qowner = values.qowner
-    savedValues.qgroup1 = values.qgroup1
-    savedValues.qgroup2 = values.qgroup2
+    const { name, email, password } = values
     //
-    //  Process promise
+    //  Post to server
     //
-    var myPromise = MakeQueryablePromise(QuizGetData(savedValues))
-    //
-    //  Initial status
-    //
-    if (g_log1) console.log('Initial pending:', myPromise.isPending()) //true
-    if (g_log1) console.log('Initial fulfilled:', myPromise.isFulfilled()) //false
-    if (g_log1) console.log('Initial rejected:', myPromise.isRejected()) //false
-    //
-    //  Resolve Status
-    //
-    myPromise.then(function (data) {
-      if (g_log1) console.log('data ', data)
-      if (g_log1) console.log('myPromise ', myPromise)
-      if (g_log1) console.log('Final fulfilled:', myPromise.isFulfilled()) //true
-      if (g_log1) console.log('Final rejected:', myPromise.isRejected()) //false
-      if (g_log1) console.log('Final pending:', myPromise.isPending()) //false
-      //
-      //  No data
-      //
-      if (!data) {
-        setForm_message('No data found')
-      }
-      //
-      //  Next Step
-      //
-      else {
-        ValtioStore.v_Page = 'Quiz'
-        return
-      }
+    fetch(URL_REGISTER, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sqlClient: sqlClient,
+        email: email,
+        password: password,
+        name: name
+      })
     })
+      .then(response => response.json())
+
+      .then(user => {
+        if (user.id) {
+          setId(user.id)
+          setForm_message(`Data updated in Database with ID(${user.id})`)
+          ValtioStore.v_Page = 'QuizSignin'
+        } else {
+          setForm_message('User not registered')
+        }
+      })
+      .catch(err => {
+        setForm_message(err.message)
+      })
   }
   //...................................................................................
   //.  Render the form
@@ -132,12 +122,20 @@ function QuizSelect() {
                 {/*.................................................................................................*/}
                 <Grid item xs={12}>
                   <Typography variant='subtitle1' gutterBottom>
-                    Question Selection
+                    Register {id > 0 ? ` (${id})` : null}
                   </Typography>
                 </Grid>
                 {/*.................................................................................................*/}
+                <Grid item xs={12}>
+                  <Textfield name='name' label='name' />
+                </Grid>
+                <Grid item xs={12}>
+                  <Textfield name='email' label='email' />
+                </Grid>
+                <Grid item xs={12}>
+                  <Textfield name='password' label='password' />
+                </Grid>
 
-                <QuizSelectPanel EntryFields={QuizSelectFields} />
                 {/*.................................................................................................*/}
                 {/*  Message */}
                 {/*.................................................................................................*/}
@@ -151,8 +149,14 @@ function QuizSelect() {
                 <Grid item xs={12}>
                   <Controls.Qbutton
                     type='submit'
-                    text='Start Quiz'
+                    text='Register'
                     value='Submit'
+                  />
+                  <Controls.Qbutton
+                    text='Signin'
+                    onClick={() => {
+                      ValtioStore.v_Page = 'QuizSignin'
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -164,4 +168,4 @@ function QuizSelect() {
   )
 }
 
-export default QuizSelect
+export default QuizRegister

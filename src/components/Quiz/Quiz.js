@@ -22,7 +22,7 @@ const g_log2 = false
 const g_log3 = false
 const g_log4 = true
 //===================================================================================
-const Quiz = ({ setStep }) => {
+const Quiz = () => {
   //
   //  Define the State variables
   //
@@ -81,7 +81,7 @@ const Quiz = ({ setStep }) => {
     //
     if (rowIdx + 1 >= questCount) {
       if (g_log3) console.log('v_Ans', snapShot.v_Ans)
-      setStep(2)
+      ValtioStore.v_Page = 'QuizSummary'
       return
     }
     //

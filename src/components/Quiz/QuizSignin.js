@@ -10,19 +10,20 @@ import { ValtioStore } from './ValtioStore'
 //
 //  Sub Components
 //
-import { QuizSelectFields } from './QuizSelectFields'
-import QuizSelectPanel from './QuizSelectPanel'
-import QuizGetData from './QuizGetData'
-import MakeQueryablePromise from '../MakeQueryablePromise'
 import Controls from '../../components/controls/Controls'
+import Textfield from '../controls/Textfield'
 //..............................................................................
 //.  Initialisation
 //.............................................................................
 //
 // Constants
 //
+const { URL_SIGNIN } = require('../constants.js')
+const sqlClient = 'Quiz/Signin'
+//
+// Debugging
+//
 const g_log1 = true
-const g_log2 = false
 //
 //  Styles
 //
@@ -39,27 +40,18 @@ const useStyles = makeStyles(theme => ({
 //  Initial Values
 //
 const initialValues = {
-  qowner: 'public',
-  qgroup1: 'redoubles',
-  qgroup2: ''
-}
-//
-//  Saved Values on Submit
-//
-const savedValues = {
-  qowner: '',
-  qgroup1: '',
-  qgroup2: ''
+  email: '',
+  password: ''
 }
 //.............................................................................
 //.  Input field validation
 //.............................................................................
 const validationSchema = Yup.object({
-  qowner: Yup.string().required('Required'),
-  qgroup1: Yup.string().required('Required')
+  email: Yup.string().email().required('Required'),
+  password: Yup.string().required('Required')
 })
 //===================================================================================
-function QuizSelect() {
+function QuizSignin() {
   //
   //  Style classes
   //
@@ -73,44 +65,36 @@ function QuizSelect() {
   //...................................................................................
   const onSubmitForm = (values, submitProps) => {
     //
-    //  Save data
+    //  Deconstruct values
     //
-    savedValues.qowner = values.qowner
-    savedValues.qgroup1 = values.qgroup1
-    savedValues.qgroup2 = values.qgroup2
+    const { email, password } = values
     //
-    //  Process promise
+    //  Post to server
     //
-    var myPromise = MakeQueryablePromise(QuizGetData(savedValues))
-    //
-    //  Initial status
-    //
-    if (g_log1) console.log('Initial pending:', myPromise.isPending()) //true
-    if (g_log1) console.log('Initial fulfilled:', myPromise.isFulfilled()) //false
-    if (g_log1) console.log('Initial rejected:', myPromise.isRejected()) //false
-    //
-    //  Resolve Status
-    //
-    myPromise.then(function (data) {
-      if (g_log1) console.log('data ', data)
-      if (g_log1) console.log('myPromise ', myPromise)
-      if (g_log1) console.log('Final fulfilled:', myPromise.isFulfilled()) //true
-      if (g_log1) console.log('Final rejected:', myPromise.isRejected()) //false
-      if (g_log1) console.log('Final pending:', myPromise.isPending()) //false
-      //
-      //  No data
-      //
-      if (!data) {
-        setForm_message('No data found')
-      }
-      //
-      //  Next Step
-      //
-      else {
-        ValtioStore.v_Page = 'Quiz'
-        return
-      }
+    fetch(URL_SIGNIN, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sqlClient: sqlClient,
+        email: email,
+        password: password
+      })
     })
+      .then(response => response.json())
+
+      .then(user => {
+        if (user.id) {
+          setForm_message(`Signin successful with ID(${user.id})`)
+          ValtioStore.v_Page = 'QuizSelect'
+          ValtioStore.v_Email = email
+          ValtioStore.v_Name = user.name
+        } else {
+          setForm_message('User not registered or password invalid')
+        }
+      })
+      .catch(err => {
+        setForm_message(err.message)
+      })
   }
   //...................................................................................
   //.  Render the form
@@ -132,12 +116,17 @@ function QuizSelect() {
                 {/*.................................................................................................*/}
                 <Grid item xs={12}>
                   <Typography variant='subtitle1' gutterBottom>
-                    Question Selection
+                    Sign In
                   </Typography>
                 </Grid>
                 {/*.................................................................................................*/}
+                <Grid item xs={12}>
+                  <Textfield name='email' label='email' />
+                </Grid>
+                <Grid item xs={12}>
+                  <Textfield name='password' label='password' />
+                </Grid>
 
-                <QuizSelectPanel EntryFields={QuizSelectFields} />
                 {/*.................................................................................................*/}
                 {/*  Message */}
                 {/*.................................................................................................*/}
@@ -151,8 +140,14 @@ function QuizSelect() {
                 <Grid item xs={12}>
                   <Controls.Qbutton
                     type='submit'
-                    text='Start Quiz'
+                    text='SignIn'
                     value='Submit'
+                  />
+                  <Controls.Qbutton
+                    text='Register'
+                    onClick={() => {
+                      ValtioStore.v_Page = 'QuizRegister'
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -164,4 +159,4 @@ function QuizSelect() {
   )
 }
 
-export default QuizSelect
+export default QuizSignin

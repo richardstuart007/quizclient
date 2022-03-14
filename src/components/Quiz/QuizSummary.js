@@ -19,7 +19,7 @@ import QuizHyperlinks from './QuizHyperlinks'
 //
 const g_log1 = true
 //===================================================================================
-const QuizSummary = ({ setStep }) => {
+const QuizSummary = () => {
   if (g_log1) console.log('Start')
   //
   //  Define the State variables
@@ -104,7 +104,7 @@ const QuizSummary = ({ setStep }) => {
     if (g_log1) console.log('handleRestart ')
     ValtioStore.v_Reset0 = true
     ValtioStore.v_Reset1 = true
-    setStep(0)
+    ValtioStore.v_Page = 'QuizSelect'
     return
   }
   //...................................................................................
@@ -129,7 +129,7 @@ const QuizSummary = ({ setStep }) => {
     //  Update the Step and return
     //
     if (g_log1) console.log('handleQuit ')
-    setStep(9)
+    ValtioStore.v_Page = 'QuizGoodbye'
     return
   }
   //...................................................................................
@@ -157,8 +157,8 @@ const QuizSummary = ({ setStep }) => {
   //...................................................................................
   return (
     <div>
-      <Typography variant='h4'>
-        Mark ({mark}%) {ansPass} out of {ansCount}
+      <Typography variant='subtitle1'>
+        Quiz Summary ({mark}%) {ansPass} out of {ansCount}
       </Typography>
 
       <QuizHeader quizRow={quizRow} />

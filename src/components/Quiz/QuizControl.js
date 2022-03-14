@@ -2,12 +2,16 @@
 //  Libraries
 //
 import { useState } from 'react'
+import { ValtioStore } from './ValtioStore'
+import { useSnapshot } from 'valtio'
 //
 //  Sub Components
 //
 import QuizSelect from './QuizSelect'
 import Quiz from './Quiz'
 import QuizSummary from './QuizSummary'
+import QuizRegister from './QuizRegister'
+import QuizSignin from './QuizSignin'
 //
 //  Debug logging
 //
@@ -15,23 +19,31 @@ const g_log1 = true
 //===================================================================================
 function QuizControl() {
   //
-  //  Define the State variables
+  //  Define the ValtioStore
   //
-  const [step, setStep] = useState(0)
+  const snapShot = useSnapshot(ValtioStore)
+  //
+  //  Retrieve the state
+  //
+  const page = snapShot.v_Page
+  console.log(' page ', page)
   //
   //  Present the selected component
   //
-  switch (step) {
-    case 0:
-      return <QuizSelect setStep={setStep} />
-    case 1:
-      return <Quiz setStep={setStep} />
-    case 2:
-      return <QuizSummary setStep={setStep} />
-    case 9:
+  switch (page) {
+    case 'QuizRegister':
+      return <QuizRegister />
+    case 'QuizSignin':
+      return <QuizSignin />
+    case 'QuizSelect':
+      return <QuizSelect />
+    case 'Quiz':
+      return <Quiz />
+    case 'QuizSummary':
+      return <QuizSummary />
+    case 'QuizGoodbye':
       return <p>Thanks and Goodbye!</p>
     default:
-      if (g_log1) console.log(`Step ${step} waiting for data`)
       return <p>waiting for data</p>
   }
 }
